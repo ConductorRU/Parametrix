@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Исходные файлы">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Файлы ресурсов">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Исходные файлы\Core">
+      <UniqueIdentifier>{19f11f57-0857-465c-8734-fcac2af19d5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\Render">
+      <UniqueIdentifier>{a6d08dbc-c8ae-4f3b-a401-8c389881ee58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\Render\DirectX12">
+      <UniqueIdentifier>{7c030992-8abe-4b27-8a3d-d1cb8a9e495c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\Math">
+      <UniqueIdentifier>{dbb25bd2-ecc7-4d98-b32c-f15f9dd05403}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\Material">
+      <UniqueIdentifier>{2d698c86-2307-46fc-8ac5-9c14f2afcfc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\Scene">
+      <UniqueIdentifier>{e53948b2-940e-4631-a677-b91a03d95178}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\Format">
+      <UniqueIdentifier>{8940bada-cb3c-4c7e-93b9-6acb36fbbb9f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\stdafx.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\Window.cpp">
+      <Filter>Исходные файлы\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\Engine.cpp">
+      <Filter>Исходные файлы\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\Render.cpp">
+      <Filter>Исходные файлы\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\DirectX12\RenderDX12.cpp">
+      <Filter>Исходные файлы\Render\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Math\Color.cpp">
+      <Filter>Исходные файлы\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Material\Material.cpp">
+      <Filter>Исходные файлы\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\DirectX12\RenderMesh.cpp">
+      <Filter>Исходные файлы\Render\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\Scene.cpp">
+      <Filter>Исходные файлы\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Math\Transform.cpp">
+      <Filter>Исходные файлы\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\Actor.cpp">
+      <Filter>Исходные файлы\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\Mesh.cpp">
+      <Filter>Исходные файлы\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\Camera.cpp">
+      <Filter>Исходные файлы\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Math\Math.cpp">
+      <Filter>Исходные файлы\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\Input.cpp">
+      <Filter>Исходные файлы\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\Canvas.cpp">
+      <Filter>Исходные файлы\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\Light.cpp">
+      <Filter>Исходные файлы\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Format\XML.cpp">
+      <Filter>Исходные файлы\Format</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Format\File.cpp">
+      <Filter>Исходные файлы\Format</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\Manager.cpp">
+      <Filter>Исходные файлы\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Material\Texture.cpp">
+      <Filter>Исходные файлы\Material</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Parametrix.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\stdafx.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\Engine.h">
+      <Filter>Исходные файлы\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\Header.h">
+      <Filter>Исходные файлы\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\Window.h">
+      <Filter>Исходные файлы\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Render\Render.h">
+      <Filter>Исходные файлы\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Render\Header.h">
+      <Filter>Исходные файлы\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Render\DirectX12\RenderDX12.h">
+      <Filter>Исходные файлы\Render\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Render\DirectX12\Header.h">
+      <Filter>Исходные файлы\Render\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Math\Color.h">
+      <Filter>Исходные файлы\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Math\Header.h">
+      <Filter>Исходные файлы\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\Debug.h">
+      <Filter>Исходные файлы\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Material\Header.h">
+      <Filter>Исходные файлы\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Material\Material.h">
+      <Filter>Исходные файлы\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Render\DirectX12\RenderMesh.h">
+      <Filter>Исходные файлы\Render\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\Header.h">
+      <Filter>Исходные файлы\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\Scene.h">
+      <Filter>Исходные файлы\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Math\Transform.h">
+      <Filter>Исходные файлы\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\Actor.h">
+      <Filter>Исходные файлы\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\Mesh.h">
+      <Filter>Исходные файлы\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\Camera.h">
+      <Filter>Исходные файлы\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Math\Math.h">
+      <Filter>Исходные файлы\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\Input.h">
+      <Filter>Исходные файлы\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\Canvas.h">
+      <Filter>Исходные файлы\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\Light.h">
+      <Filter>Исходные файлы\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Format\Header.h">
+      <Filter>Исходные файлы\Format</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Format\XML.h">
+      <Filter>Исходные файлы\Format</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Format\File.h">
+      <Filter>Исходные файлы\Format</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\Manager.h">
+      <Filter>Исходные файлы\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Material\Texture.h">
+      <Filter>Исходные файлы\Material</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
