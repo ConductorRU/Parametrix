@@ -34,11 +34,11 @@ namespace Led
 	{
 	private:
 		static Engine* _this;
-		class Window* _window;
-		class Render* _render;
-		class Scene* _scene;
-		class Input* _input;
-		class Manager* _manager;
+		unique_ptr<class Window> _window;
+		unique_ptr<class Render> _render;
+		unique_ptr<class Scene> _scene;
+		unique_ptr<class Input> _input;
+		unique_ptr<class Manager> _manager;
 		Time _time;
 		HCURSOR _cursor;
 		CURSOR_TYPE _cursorType;
@@ -46,11 +46,11 @@ namespace Led
 	public:
 		static Engine *Get() { return _this; };
 		Time *GetTime() { return &_time; };
-		Manager *GetManager() { return _manager; };
-		Scene *GetScene() { return _scene; };
-		Input* GetInput() { return _input; }
-		Window* GetWindow() { return _window; }
-		Render* GetRender() { return _render; }
+		Manager *GetManager() { return _manager.get(); };
+		Scene *GetScene() { return _scene.get(); };
+		Input *GetInput() { return _input.get(); }
+		Window *GetWindow() { return _window.get(); }
+		Render *GetRender() { return _render.get(); }
 		Engine();
 		~Engine();
 		void ShowCursor(bool enable);

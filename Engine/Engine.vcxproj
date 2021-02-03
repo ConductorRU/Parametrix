@@ -85,6 +85,8 @@
     <OutDir>$(ProjectDir)</OutDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\Source</IncludePath>
+    <NMakeBuildCommandLine>Build.bat</NMakeBuildCommandLine>
+    <NMakeOutput>Engine.lib</NMakeOutput>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ProjectDir)</OutDir>
@@ -148,8 +150,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\2D\Actor2D.cpp" />
+    <ClCompile Include="Source\2D\Canvas.cpp" />
+    <ClCompile Include="Source\2D\Shape.cpp" />
     <ClCompile Include="Source\Core\Engine.cpp" />
+    <ClCompile Include="Source\Core\Event.cpp" />
     <ClCompile Include="Source\Core\Input.cpp" />
+    <ClCompile Include="Source\Core\Reflection.cpp" />
     <ClCompile Include="Source\Core\Window.cpp" />
     <ClCompile Include="Source\Format\File.cpp" />
     <ClCompile Include="Source\Format\XML.cpp" />
@@ -158,12 +165,13 @@
     <ClCompile Include="Source\Math\Color.cpp" />
     <ClCompile Include="Source\Math\Math.cpp" />
     <ClCompile Include="Source\Math\Transform.cpp" />
+    <ClCompile Include="Source\Math\Transform2D.cpp" />
+    <ClCompile Include="Source\Math\Vector.cpp" />
     <ClCompile Include="Source\Render\DirectX12\RenderDX12.cpp" />
     <ClCompile Include="Source\Render\DirectX12\RenderMesh.cpp" />
     <ClCompile Include="Source\Render\Render.cpp" />
     <ClCompile Include="Source\Scene\Actor.cpp" />
     <ClCompile Include="Source\Scene\Camera.cpp" />
-    <ClCompile Include="Source\Scene\Canvas.cpp" />
     <ClCompile Include="Source\Scene\Light.cpp" />
     <ClCompile Include="Source\Scene\Manager.cpp" />
     <ClCompile Include="Source\Scene\Mesh.cpp" />
@@ -172,12 +180,19 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Source\Universe\Character\Character.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\2D\Actor2D.h" />
+    <ClInclude Include="Source\2D\Canvas.h" />
+    <ClInclude Include="Source\2D\Header.h" />
+    <ClInclude Include="Source\2D\Shape.h" />
     <ClInclude Include="Source\Core\Debug.h" />
     <ClInclude Include="Source\Core\Engine.h" />
+    <ClInclude Include="Source\Core\Event.h" />
     <ClInclude Include="Source\Core\Header.h" />
     <ClInclude Include="Source\Core\Input.h" />
+    <ClInclude Include="Source\Core\Reflection.h" />
     <ClInclude Include="Source\Core\Window.h" />
     <ClInclude Include="Source\Format\File.h" />
     <ClInclude Include="Source\Format\Header.h" />
@@ -188,7 +203,10 @@
     <ClInclude Include="Source\Math\Color.h" />
     <ClInclude Include="Source\Math\Header.h" />
     <ClInclude Include="Source\Math\Math.h" />
+    <ClInclude Include="Source\Math\Quaternion.h" />
     <ClInclude Include="Source\Math\Transform.h" />
+    <ClInclude Include="Source\Math\Transform2D.h" />
+    <ClInclude Include="Source\Math\Vector.h" />
     <ClInclude Include="Source\Parametrix.h" />
     <ClInclude Include="Source\Render\DirectX12\Header.h" />
     <ClInclude Include="Source\Render\DirectX12\RenderDX12.h" />
@@ -197,13 +215,18 @@
     <ClInclude Include="Source\Render\Render.h" />
     <ClInclude Include="Source\Scene\Actor.h" />
     <ClInclude Include="Source\Scene\Camera.h" />
-    <ClInclude Include="Source\Scene\Canvas.h" />
     <ClInclude Include="Source\Scene\Header.h" />
     <ClInclude Include="Source\Scene\Light.h" />
     <ClInclude Include="Source\Scene\Manager.h" />
     <ClInclude Include="Source\Scene\Mesh.h" />
     <ClInclude Include="Source\Scene\Scene.h" />
     <ClInclude Include="Source\stdafx.h" />
+    <ClInclude Include="Source\Universe\Character\Character.h" />
+    <ClInclude Include="Source\Universe\Character\Header.h" />
+    <ClInclude Include="Source\Universe\Header.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Build.bat" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

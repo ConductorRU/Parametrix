@@ -5,7 +5,9 @@ namespace Led
 	map<HWND, Window*> Window::_map = {};
 	Window::Window()
 	{
+		_hDC = nullptr;
 		_func = nullptr;
+		_hWindow = nullptr;
 		_wClass = {};
 		_isFullscreen = false;
 	}

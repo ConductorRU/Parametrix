@@ -146,12 +146,25 @@ namespace Led
 		_layoutDesc.NumElements = (uint)_layout.size();
 		_layoutDesc.pInputElementDescs = &_layout[0];
 	}
+
+	Vertex* InputLayout::CreateVertex()
+	{
+		Vertex *v = new Vertex;
+		v->_data = new char[_size];
+		memset(v->_data, 0, _size);
+		v->_layout = this;
+		return v;
+	}
+
 	RenderShader::RenderShader()
 	{
 		_shader = nullptr;
 		_info = nullptr;
+		_reflect = nullptr;
+		_desk = {};
 		_bytecode = {};
 		_constSize = 0;
+		_type = SHADER_VS;
 	}
 	RenderShader::~RenderShader()
 	{
@@ -255,6 +268,7 @@ namespace Led
 		_samplerHeap = nullptr;
 		_srvDesc = {};
 		_samplerDesc = {};
+		_heap = {};
 	}
 	RenderTexture::~RenderTexture()
 	{
@@ -267,6 +281,7 @@ namespace Led
 	}
 	void RenderTexture::Create(uint width, uint height)
 	{
+		/*
 		RenderDX12 *ren = RenderDX12::Get();
 		D3D12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_B8G8R8A8_UNORM, width, height, 1, 1, 1, 0, D3D12_RESOURCE_FLAG_NONE, D3D12_TEXTURE_LAYOUT_UNKNOWN, 0);
 		D3D12_RESOURCE_DESC resDesc = CD3DX12_RESOURCE_DESC(D3D12_RESOURCE_DIMENSION_BUFFER, 0, width*height*4, 1, 1, 1, DXGI_FORMAT_UNKNOWN, 1, 0, D3D12_TEXTURE_LAYOUT_ROW_MAJOR, D3D12_RESOURCE_FLAG_NONE);
@@ -316,7 +331,7 @@ namespace Led
 		start = _samplerHeap->GetCPUDescriptorHandleForHeapStart().ptr;
 		step = ren->_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER);
 		start += step*(slot);
-		ren->_device->CreateSampler(&_samplerDesc, {start});
+		ren->_device->CreateSampler(&_samplerDesc, {start});*/
 	}
 	void RenderTexture::SetRaw(char *data, UINT width, UINT height)
 	{
@@ -482,6 +497,61 @@ namespace Led
 	{
 		_desc.RasterizerState.ConservativeRaster = (D3D12_CONSERVATIVE_RASTERIZATION_MODE)mode;
 	}
+
+	void RenderMaterial::SetBlendEnable(bool enable)
+	{
+		for(UINT i = 0; i < D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i)
+			_desc.BlendState.RenderTarget[i].BlendEnable = (BOOL)enable;
+	}
+
+	void RenderMaterial::SetBlendOp(UINT op)
+	{
+		for(UINT i = 0; i < D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i)
+			_desc.BlendState.RenderTarget[i].BlendOp = (D3D12_BLEND_OP)op;
+	}
+
+	void RenderMaterial::SetBlendOpAlpha(UINT op)
+	{
+		for(UINT i = 0; i < D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i)
+			_desc.BlendState.RenderTarget[i].BlendOpAlpha = (D3D12_BLEND_OP)op;
+	}
+
+	void RenderMaterial::SetBlend(UINT srcBlend, UINT dstBlend)
+	{
+		SetSrcBlend(srcBlend);
+		SetDestBlend(dstBlend);
+	}
+
+	void RenderMaterial::SetSrcBlend(UINT blend)
+	{
+		for(UINT i = 0; i < D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i)
+			_desc.BlendState.RenderTarget[i].SrcBlend = (D3D12_BLEND)blend;
+	}
+
+	void RenderMaterial::SetDestBlend(UINT blend)
+	{
+		for(UINT i = 0; i < D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i)
+			_desc.BlendState.RenderTarget[i].DestBlend = (D3D12_BLEND)blend;
+	}
+
+	void RenderMaterial::SetBlendAlpha(UINT srcBlend, UINT dstBlend)
+	{
+		SetSrcBlendAlpha(srcBlend);
+		SetDestBlendAlpha(dstBlend);
+	}
+
+	void RenderMaterial::SetSrcBlendAlpha(UINT blend)
+	{
+		for(UINT i = 0; i < D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i)
+			_desc.BlendState.RenderTarget[i].SrcBlendAlpha = (D3D12_BLEND)blend;
+	}
+
+	void RenderMaterial::SetDestBlendAlpha(UINT blend)
+	{
+		for(UINT i = 0; i < D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i)
+			_desc.BlendState.RenderTarget[i].DestBlendAlpha = (D3D12_BLEND)blend;
+	}
+
 	void RenderMaterial::Prepare()
 	{
 		if(_pipeline)
@@ -598,7 +668,7 @@ namespace Led
 	{
 		delete[] _data;
 	}
-	void Vertex::Set(uint offset, const Vector &data)
+	void Vertex::Set(uint offset, const float3 &data)
 	{
 		memcpy(&_data[offset], &data, sizeof(data));
 	}
@@ -606,12 +676,28 @@ namespace Led
 	{
 		memcpy(&_data[offset], &data, sizeof(data));
 	}
-	void Vertex::SetPosition(const Vector &pos)
+	void Vertex::SetPosition(const float3 &pos)
 	{
 		if(_layout->IsOffset(InputLayout::POSITION))
 			memcpy(&_data[_layout->GetOffset(InputLayout::POSITION)], &pos, sizeof(pos));
 	}
-	void Vertex::SetNormal(const Vector &nor)
+
+	void Vertex::SetPosition2D(const float2 &pos)
+	{
+		if(_layout->IsOffset(InputLayout::POSITION))
+			memcpy(&_data[_layout->GetOffset(InputLayout::POSITION)], &pos, sizeof(pos));
+	}
+
+	void Vertex::SetPosition2D(const float u, const float v)
+	{
+		if(_layout->IsOffset(InputLayout::POSITION))
+		{
+			memcpy(&_data[_layout->GetOffset(InputLayout::POSITION)], &u, sizeof(u));
+			memcpy(&_data[_layout->GetOffset(InputLayout::POSITION) + sizeof(u)], &v, sizeof(v));
+		}
+	}
+
+	void Vertex::SetNormal(const float3 &nor)
 	{
 		if(_layout->IsOffset(InputLayout::NORMAL))
 			memcpy(&_data[_layout->GetOffset(InputLayout::NORMAL)], &nor, sizeof(nor));
@@ -621,23 +707,33 @@ namespace Led
 		if(_layout->IsOffset(InputLayout::COLOR))
 			memcpy(&_data[_layout->GetOffset(InputLayout::COLOR)], &color, sizeof(color));
 	}
-	void Vertex::SetUV(const Vector2 &uv)
+	void Vertex::SetUV(const float2 &uv)
 	{
 		if(_layout->IsOffset(InputLayout::TEXCOORD0))
 			memcpy(&_data[_layout->GetOffset(InputLayout::TEXCOORD0)], &uv, sizeof(uv));
 	}
-	Vector Vertex::GetPosition() const
+
+	void Vertex::SetUV(const float u, const float v)
 	{
-		Vector res;
+		if(_layout->IsOffset(InputLayout::TEXCOORD0))
+		{
+			memcpy(&_data[_layout->GetOffset(InputLayout::TEXCOORD0)], &u, sizeof(u));
+			memcpy(&_data[_layout->GetOffset(InputLayout::TEXCOORD0) + sizeof(u)], &v, sizeof(v));
+		}
+	}
+
+	float3 Vertex::GetPosition() const
+	{
+		float3 res;
 		if(_layout->IsOffset(InputLayout::POSITION))
-			memcpy(&res, &_data[_layout->GetOffset(InputLayout::POSITION)], sizeof(Vector));
+			memcpy(&res, &_data[_layout->GetOffset(InputLayout::POSITION)], sizeof(float3));
 		return res;
 	}
-	Vector Vertex::GetNormal() const
+	float3 Vertex::GetNormal() const
 	{
-		Vector res;
+		float3 res;
 		if(_layout->IsOffset(InputLayout::NORMAL))
-			memcpy(&res, &_data[_layout->GetOffset(InputLayout::NORMAL)], sizeof(Vector));
+			memcpy(&res, &_data[_layout->GetOffset(InputLayout::NORMAL)], sizeof(float3));
 		return res;
 	}
 	Color Vertex::GetColor() const
@@ -647,47 +743,12 @@ namespace Led
 			memcpy(&res, &_data[_layout->GetOffset(InputLayout::COLOR)], sizeof(Color));
 		return res;
 	}
-	Vector2 Vertex::GetUV() const
+	float2 Vertex::GetUV() const
 	{
-		Vector2 res;
+		float2 res;
 		if(_layout->IsOffset(InputLayout::TEXCOORD0))
-			memcpy(&res, &_data[_layout->GetOffset(InputLayout::TEXCOORD0)], sizeof(Vector2));
+			memcpy(&res, &_data[_layout->GetOffset(InputLayout::TEXCOORD0)], sizeof(float2));
 		return res;
-	}
-
-	void Poly::SetNormal(const Vector& nor)
-	{
-		for(Vertex* v: list)
-			v->SetNormal(nor);
-	}
-	void Poly::SetColor(const Color& color)
-	{
-		for(Vertex* v: list)
-			v->SetColor(color);
-	}
-
-	void Poly::SetUV(const initializer_list<Vector2> uv)
-	{
-		uint size = min((uint)list.size(), (uint)uv.size());
-		uint n = 0;
-		for(Vector2 coord : uv)
-    {
-			if(n >= size)
-				break;
-			list[n]->SetUV(coord);
-			++n;
-    }
-	}
-
-	void Polygons::SetNormal(const Vector& nor)
-	{
-		for(Poly& v: list)
-			v.SetNormal(nor);
-	}
-	void Polygons::SetColor(const Color& color)
-	{
-		for(Poly& v: list)
-			v.SetColor(color);
 	}
 
 	ConstantBuffer::ConstantBuffer(RenderShader *shader)
@@ -802,6 +863,7 @@ namespace Led
 		_isCPU = true;
 		_indexBuffer = nullptr;
 		_indexBufferHeap = nullptr;
+		_topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 		memset(_constBuffer, 0, sizeof(_constBuffer));
 	}
 	RenderMesh::~RenderMesh()
@@ -833,15 +895,11 @@ namespace Led
 			}
 		}
 	}
-	Vertex *RenderMesh::CreateVertex(const Vector &pos)
+	Vertex *RenderMesh::CreateVertex()
 	{
-		Vertex *v = new Vertex;
-		uint size = _inputLayout->GetSize();
-		v->_data = new char[size];
+		Vertex *v = _inputLayout->CreateVertex();
 		v->_index = (uint)_vertex.size();
 		_vertex.push_back(v);
-		memcpy(v->_data, &pos, sizeof(pos));
-		v->_layout = _inputLayout;
 		_isDataUpdate = true;
 		return v;
 	}
@@ -867,34 +925,7 @@ namespace Led
 		_index.push_back(i0);
 		return (uint)_index.size();
 	}
-	Poly RenderMesh::AddTriangle(const Vector &pos0, const Vector &pos1, const Vector &pos2)
-	{
-		uint size = (uint)_vertex.size();
-		Poly list;
-		list.list.push_back(CreateVertex(pos0));
-		list.list.push_back(CreateVertex(pos1));
-		list.list.push_back(CreateVertex(pos2));
-		_index.push_back(size);
-		_index.push_back(size + 1);
-		_index.push_back(size + 2);
-		return list;
-	}
-	Poly RenderMesh::AddQuad(const Vector &pos0, const Vector &pos1, const Vector &pos2, const Vector &pos3)
-	{
-		uint size = (uint)_vertex.size();
-		Poly list;
-		list.list.push_back(CreateVertex(pos0));
-		list.list.push_back(CreateVertex(pos1));
-		list.list.push_back(CreateVertex(pos2));
-		list.list.push_back(CreateVertex(pos3));
-		_index.push_back(size);
-		_index.push_back(size + 1);
-		_index.push_back(size + 2);
-		_index.push_back(size + 2);
-		_index.push_back(size + 3);
-		_index.push_back(size);
-		return list;
-	}
+	
 	void RenderMesh::_Prepare()
 	{
 		if(_bufferHeap)
@@ -906,6 +937,9 @@ namespace Led
 		if(_indexBufferHeap)
 			_indexBufferHeap->Release();
 		_bufferHeap = _buffer = _indexBuffer = _indexBufferHeap = nullptr;
+		ulong size = _vertex.size()*_inputLayout->GetSize();
+		if(!size)
+			return;
 		D3D12_HEAP_PROPERTIES hProps = {};
 		hProps.Type = (_isCPU ? D3D12_HEAP_TYPE_UPLOAD : D3D12_HEAP_TYPE_DEFAULT);
 		hProps.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
@@ -915,7 +949,7 @@ namespace Led
 		D3D12_RESOURCE_DESC rDesc = {};
 		rDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
 		rDesc.Alignment = 0;
-		rDesc.Width = _vertex.size()*_inputLayout->GetSize();
+		rDesc.Width = size;
 		rDesc.Height = 1;
 		rDesc.DepthOrArraySize = 1;
 		rDesc.MipLevels = 1;
@@ -982,6 +1016,8 @@ namespace Led
 	}
 	void RenderMesh::Render(RenderMaterial* mat)
 	{
+		if(!_buffer)
+			return;
 		if(_isDataUpdate)
 		{
 			_view.BufferLocation = _buffer->GetGPUVirtualAddress();// create a vertex buffer view for the triangle. We get the GPU memory address to the vertex pointer using the GetGPUVirtualAddress() method
@@ -1002,7 +1038,7 @@ namespace Led
 				buf->Render(num);
 				++num;
 			}
-		RenderDX12::Get()->_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // set the primitive topology
+		RenderDX12::Get()->_commandList->IASetPrimitiveTopology(_topology); // set the primitive topology
 		RenderDX12::Get()->_commandList->IASetVertexBuffers(0, 1, &_view); // set the vertex buffer (using the vertex buffer view)
 		if(_indexBuffer)
 		{
@@ -1012,15 +1048,27 @@ namespace Led
 		else
 			RenderDX12::Get()->_commandList->DrawInstanced((uint)_vertex.size(), 1, 0, 0);
 	}
+
+	void RenderMesh::SetTopology(D3D_PRIMITIVE_TOPOLOGY type)
+	{
+		_topology = type;
+	}
+
 	void RenderMesh::SetConst(SHADER_TYPE sType, const string& bufferName, const string& bufferField, uchar* data, uint size)
 	{
 		if(_constBuffer[sType])
 			_constBuffer[sType]->Copy(data, size, bufferName, bufferField);
 	}
-	void RenderMesh::SetConst(SHADER_TYPE sType, const string& bufferName, const string& bufferField, const Vector& data)
+	void RenderMesh::SetConst(SHADER_TYPE sType, const string& bufferName, const string& bufferField, const float3& data)
 	{
-		SetConst(sType, bufferName, bufferField, (uchar*)&data, sizeof(Vector));
+		SetConst(sType, bufferName, bufferField, (uchar*)&data, sizeof(float3));
 	}
+
+	void RenderMesh::SetConst(SHADER_TYPE sType, const string& bufferName, const string& bufferField, const Vector4& data)
+	{
+		SetConst(sType, bufferName, bufferField, (uchar*)&data, sizeof(Vector4));
+	}
+
 	void RenderMesh::SetConst(SHADER_TYPE sType, const string& bufferName, const string& bufferField, const Color& data)
 	{
 		SetConst(sType, bufferName, bufferField, (uchar*)&data, sizeof(Color));

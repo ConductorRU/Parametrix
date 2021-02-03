@@ -1,6 +1,23 @@
 #pragma once
+#include "../Render/Header.h"
+#include "Actor.h"
 namespace Led
 {
+	struct Poly
+	{
+		vector<Vertex*> list;
+		void SetNormal(const float3& nor);
+		void SetColor(const Color& color);
+		void SetUV(const initializer_list<float2> uv);
+	};
+
+	struct Polygons
+	{
+		vector<Poly> list;
+		void SetNormal(const float3& nor);
+		void SetColor(const Color& color);
+	};
+
 	class Mesh: public Actor, public RenderMesh
 	{
 	private:
@@ -8,7 +25,13 @@ namespace Led
 	public:
 		Mesh(InputLayout* il);
 		~Mesh();
-		void SetMaterial(Material *material) { _material = material; RenderMesh::SetMaterial((RenderMaterial*)_material); }
+		Poly AddTriangle(const float3 &pos0, const float3 &pos1, const float3 &pos2);
+		Poly AddQuad(const float3 &pos0, const float3 &pos1, const float3 &pos2, const float3 &pos3);
+		void SetMaterial(Material *material)
+		{
+			_material = material;
+			RenderMesh::SetMaterial((RenderMaterial*)_material);
+		}
 		Material* GetMaterial() { return _material; }
 		void BeforeRender() override;
 		void Render(class Scene* scene) override;
@@ -19,38 +42,43 @@ namespace Led
 	};
 	struct ParaBox
 	{
-		Vector center;
-		Vector size;
-		Polygons Generate(RenderMesh *mesh);
+		float3 scale = float3::ONE;
+		float3 size;
+		Polygons Generate(Mesh *mesh, const float3 &center = float3::ZERO);
 	};
 	struct ParaPlane
 	{
-		Vector center;
-		Vector2 size;
-		Polygons Generate(RenderMesh *mesh);
+		float2 scale = float2::ONE;
+		float2 size;
+		Polygons Generate(Mesh *mesh, const float3 &center = float3::ZERO);
 	};
 	struct ParaSphere
 	{
-		Vector center;
-		float radius;
-		uint sides;
-		Polygons Generate(RenderMesh *mesh);
+		float3 scale = float3::ONE;
+		float radius = 0.5f;
+		uint sides = 32;
+		Polygons Generate(Mesh *mesh, const float3 &center = float3::ZERO);
 	};
 	struct ParaCylinder
 	{
-		Vector center;
-		float radius;
-		float height;
-		uint sides;
-		Polygons Generate(RenderMesh *mesh);
+	private:
+		float _topRadius = 0.5f;
+		float _bottomRadius = 0.5f;
+	public:
+		float3 scale = float3::ONE;
+		float height = 1.0f;
+		uint sides = 16;
+		void SetRadius(float radius);
+		void SetRadius(float bottomRadius, float topRadius);
+		Polygons Generate(Mesh *mesh, const float3 &center = float3::ZERO);
 	};
 	struct ParaCone
 	{
-		Vector center;
+		float3 scale = float3::ONE;
 		float radius = 0.5f;
 		float height = 1.0f;
 		uint sides = 16;
 		bool smooth = true;
-		Polygons Generate(RenderMesh *mesh);
+		Polygons Generate(Mesh *mesh, const float3 &center = float3::ZERO);
 	};
 }

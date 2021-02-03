@@ -44,9 +44,9 @@ namespace Led
 		_proj = Matrix4::Perspective(Math::ToRadian(_fov), aspect, _near, _far);
 		//_proj = Matrix4::Orthographic(aspect*_orthoScale, (1.0f/aspect)*_orthoScale, _near, _far);
 		_view = GetWorldTransform().ToMatrix4();
-		Vector pos = GetWorldTransform().GetPosition();
-		_view[3][0] = -Vector(_view[0][0], _view[1][0], _view[2][0]).Dot(pos);
-		_view[3][1] = -Vector(_view[0][1], _view[1][1], _view[2][1]).Dot(pos);
-		_view[3][2] = -Vector(_view[0][2], _view[1][2], _view[2][2]).Dot(pos);
+		float3 pos = GetWorldTransform().GetPosition();
+		_view[3][0] = -float3(_view[0][0], _view[1][0], _view[2][0]).Dot(pos);
+		_view[3][1] = -float3(_view[0][1], _view[1][1], _view[2][1]).Dot(pos);
+		_view[3][2] = -float3(_view[0][2], _view[1][2], _view[2][2]).Dot(pos);
 	}
 }

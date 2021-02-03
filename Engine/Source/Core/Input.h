@@ -196,7 +196,8 @@ namespace Led
 		string GetInputText(KEY_TYPE code);
 		void Run(const UINT &msg, WPARAM wParam, LPARAM lParam);
 		void Update();
-		void ClipToWindow();
+		void Clear();
+		void ClipToWindow(bool enable);
 		void SetWinRect(const RECT &winrect);// зона окна
 	};
 }

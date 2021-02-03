@@ -11,12 +11,10 @@ namespace Led
 	}
 	void Render::RenderScene(Scene *scene)
 	{
-		for(Actor* actor: scene->_actors)
-			actor->BeforeRender();
+		scene->BeforeRender();
 
 		Begin(Color(0.1f, 0.8f, 0.8f), 1.0f);
-		for(Actor* actor: scene->_actors)
-			actor->Render(scene);
+		scene->Render();
 		End();
 	}
 }

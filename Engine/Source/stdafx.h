@@ -30,6 +30,11 @@
 #include <stdio.h>
 #include <io.h>
 #include <fcntl.h>
+#include <stdexcept>
+#include <atomic>
+#include <mutex>
+#include <future>
+
 //#define D3D10_IGNORE_SDK_LAYERS
 #ifdef _DEBUG
 #include <crtdbg.h>
@@ -54,3 +59,7 @@ typedef unsigned __int16 ushort;
 typedef unsigned __int32 uint;
 typedef unsigned __int64 ulong;
 typedef size_t sint;
+
+template<class T> using unique = unique_ptr<T>;
+template<class T> using weak = weak_ptr<T>;
+template<class T> using shared = shared_ptr<T>;

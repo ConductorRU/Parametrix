@@ -12,6 +12,7 @@ namespace Led
 		Color _background;
 		set<class Actor*> _actors;
 		set<class Camera*> _cameras;
+		set<class Canvas*> _canvas;
 		Camera* _camera;
 		void _AddCamera(class Camera* cam);
 		void _RemoveCamera(Camera* cam);
@@ -21,11 +22,14 @@ namespace Led
 		Camera* GetCamera() { return _camera; };
 		Scene();
 		~Scene();
+		bool AddCanvas(Canvas *canvas);
 		bool IsActor(Actor *actor);
+		bool IsCanvas(Canvas *canvas);
 		bool AddActor(Actor *actor);
 		bool RemoveActor(Actor *actor);
 		void Clear();
 		void Update();
+		void BeforeRender();
 		void Render();
 	};
 }

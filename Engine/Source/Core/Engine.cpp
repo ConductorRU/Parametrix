@@ -34,16 +34,13 @@ namespace Led
 		_cursorType = CURSOR_NONE;
 		_exit = false;
 		_time = {};
-		_manager = new Manager();
-		_scene = new Scene();
-		_input = new Input();
+		_manager = make_unique<Manager>();
+		_scene = make_unique<Scene>();
+		_input = make_unique<Input>();
 	}
 	Engine::~Engine()
 	{
 		Clear();
-		delete _input;
-		delete _scene;
-		delete _manager;
 	}
 	void Engine::ShowCursor(bool enable)
 	{
@@ -51,11 +48,11 @@ namespace Led
 	}
 	void Engine::Initialize(uint width, uint height, bool isFullscreen, const wstring &title)
 	{
-		_window = new Window;
+		_window = make_unique<Window>();
 		_window->Initialize(title, width, height, isFullscreen);
 		_window->SetFunc(Engine::WindProc);
-		_render = new RenderDX12;
-		_render->Initialize(_window, width, height);
+		_render = make_unique<RenderDX12>();
+		_render->Initialize(_window.get(), width, height);
 		SetCursor(CURSOR_ARROW);
 	}
 	LRESULT Engine::WindProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -72,7 +69,7 @@ namespace Led
 			Engine::Get()->_exit = true;
 			return 0;
 		case WM_SIZE:
-			//Engine::Get()->GetRender()->Resize(LOWORD(lParam), HIWORD(lParam));
+			Engine::Get()->GetRender()->Resize(LOWORD(lParam), HIWORD(lParam));
 			return 0;
 			//case WM_SIZING:
 		case WM_MOUSEMOVE: case WM_LBUTTONUP: case WM_LBUTTONDOWN: case WM_MBUTTONUP: case WM_MBUTTONDOWN: case WM_RBUTTONUP: case WM_RBUTTONDOWN: case WM_MOUSEWHEEL: case WM_KEYDOWN: case WM_KEYUP:
@@ -109,7 +106,8 @@ namespace Led
 	void Engine::Render()
 	{
 		_scene->Update();
-		_render->RenderScene(_scene);
+		_render->RenderScene(_scene.get());
+		_input->Clear();
 	}
 	bool Engine::Update()
 	{
@@ -121,10 +119,6 @@ namespace Led
 	}
 	void Engine::Clear()
 	{
-		if(_render)
-			delete _render;
-		if(_window)
-			delete _window;
 		_render = nullptr;
 		_window = nullptr;
 	}

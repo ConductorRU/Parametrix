@@ -8,16 +8,19 @@ namespace Led
 		static Manager* _this;
 		set<InputLayout*> _inputLayouts;
 		set<class Material*> _materials;
+		map<string,  Material*> _mMaterials;
 		set<class VertexShader*> _vs;
 		set<class PixelShader*> _ps;
 	public:
 		static Manager* Get() { return _this; };
 		Manager();
 		~Manager();
-		class InputLayout* CreateInputLayout();
-		class Material* CreateMaterial();
-		class VertexShader* CreateVertexShader();
-		class PixelShader* CreatePixelShader();
+		InputLayout* CreateInputLayout();
+		Material* CreateMaterial();
+		Material* CreateMaterial(const string &name);
+		Material* GetMaterial(const string &name);
+		VertexShader* CreateVertexShader();
+		PixelShader* CreatePixelShader();
 
 	};
 }

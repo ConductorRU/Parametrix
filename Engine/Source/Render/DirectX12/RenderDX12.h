@@ -81,7 +81,7 @@ namespace Led
 		vector<ID3D12Resource*> _renderTargets;
 		vector<ID3D12CommandAllocator*> _commandAllocator;
 		ID3D12GraphicsCommandList* _commandList;
-		vector<ID3D12Fence*> _fence;    // an object that is locked while our command list is being executed by the gpu. We need as many as we have allocators (more if we want to know when the gpu is finished with an asset)
+		ID3D12Fence* _fence;    // an object that is locked while our command list is being executed by the gpu. We need as many as we have allocators (more if we want to know when the gpu is finished with an asset)
 		HANDLE _fenceEvent; // a handle to an event when our fence is unlocked by the gpu
 		vector<UINT64> _fenceValue; // this value is incremented each frame. each fence will have its own value
 		int _rtvDescriptorSize;
@@ -95,6 +95,8 @@ namespace Led
 		void BarrierTransition(_In_ ID3D12Resource* pResource, D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter, UINT subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES, D3D12_RESOURCE_BARRIER_FLAGS flags = D3D12_RESOURCE_BARRIER_FLAG_NONE);
 		void ExecuteCommandList();
 		void ResetCommandList();
+		void UpdateViewAndScissor();
+		void LoadSizeDependentResources();
 		inline uint GetFrameBufferCount() { return _frameBufferCount; }
 		inline uint GetFrameIndex() { return _frameIndex; }
 

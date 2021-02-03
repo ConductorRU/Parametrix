@@ -1,6 +1,9 @@
 #pragma once
 namespace Led
 {
+	#define PI 3.141592654f
+	#define PI_HALF 1.570796327f
+	#define PI_QUART 0.7853981635f
 	namespace Math
 	{
 		inline float ToRadian(float angle)

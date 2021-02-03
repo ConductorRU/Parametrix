@@ -33,6 +33,22 @@ namespace Led
 		_materials.insert(mat);
 		return mat;
 	}
+
+	Material* Manager::CreateMaterial(const string &name)
+	{
+		Material* mat = CreateMaterial();
+		_mMaterials[name] = mat;
+		return mat;
+	}
+
+	Material* Manager::GetMaterial(const string &name)
+	{
+		auto it = _mMaterials.find(name);
+		if(it != _mMaterials.end())
+			return it->second;
+		return nullptr;
+	}
+
 	VertexShader* Manager::CreateVertexShader()
 	{
 		VertexShader* shader = new VertexShader();

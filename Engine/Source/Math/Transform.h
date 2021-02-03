@@ -1,296 +1,9 @@
 #pragma once
 #include "Math.h"
+#include "Vector.h"
+#include "Quaternion.h"
 namespace Led
 {
-	#define PI 3.141592654f
-	#define PI_HALF 1.570796327f
-	#define PI_QUART 0.7853981635f
-	struct Point2
-	{
-		int x;
-		int y;
-		Point2() { x = y = 0; };
-		Point2(int value) { x = y = value; };
-		Point2(int px, int py)
-		{
-			x = px;
-			y = py;
-		}
-		Point2 operator + (const Point2& p) const
-		{
-			return Point2(x + p.x, y + p.y);
-		}
-		Point2 operator - (const Point2& p) const
-		{
-			return Point2(x - p.x, y - p.y);
-		}
-		Point2& operator += (const Point2& p)
-		{
-			x += p.x;
-			y += p.y;
-			return *this;
-		}
-		Point2& operator -= (const Point2& p)
-		{
-			x -= p.x;
-			y -= p.y;
-			return *this;
-		}
-	};
-	struct int3
-	{
-		int x;
-		int y;
-		int z;
-	};
-	struct Vector2
-	{
-		float x;
-		float y;
-		Vector2() { x = y = 0; };
-		Vector2(float value) { x = y = value; };
-		Vector2(float px, float py)
-		{
-			x = px;
-			y = py;
-		}
-		Vector2 operator + (const Vector2& p) const
-		{
-			return Vector2(x + p.x, y + p.y);
-		}
-		Vector2 operator - (const Vector2& p) const
-		{
-			return Vector2(x - p.x, y - p.y);
-		}
-	};
-	struct Vector
-	{
-		float x, y, z;
-		Vector() { x = y = z = 0.0f; };
-		Vector(float value) { x = y = z = value; };
-		Vector(float px, float py, float pz)
-		{
-			x = px;
-			y = py;
-			z = pz;
-		}
-		float GetDistance(const Vector &v) const
-		{
-			return sqrt((x - v.x)*(x - v.x) + (y - v.y)*(y - v.y) + (z - v.z)*(z - v.z));
-		}
-		float GetSquaredDistance(const Vector &v) const
-		{
-			return (x - v.x)*(x - v.x) + (y - v.y)*(y - v.y) + (z - v.z)*(z - v.z);
-		}
-		Vector operator + (const Vector& p) const
-		{
-			return Vector(x + p.x, y + p.y, z + p.z);
-		}
-		Vector& operator += (const Vector& p)
-		{
-			x += p.x;
-			y += p.y;
-			z += p.z;
-			return *this;
-		}
-		Vector& operator -= (const Vector& p)
-		{
-			x -= p.x;
-			y -= p.y;
-			z -= p.z;
-			return *this;
-		}
-		bool operator== (const Vector& p) const
-		{
-			return (p.x == x) && (p.y == y) && (p.z == z);
-		}
-		bool operator!= (const Vector& p) const
-		{
-			return (p.x != x) || (p.y != y) || (p.z != z);
-		}
-		Vector operator - (const Vector pVector) const
-		{
-			return Vector(x - pVector.x, y - pVector.y, z - pVector.z);
-		}
-		Vector operator - () const
-		{
-			return Vector(-x, -y, -z);
-		}
-		Vector operator / (const float f) const
-		{
-			return Vector(x / f, y / f, z / f);
-		}
-		Vector operator * (const float f) const
-		{
-			return Vector(x*f, y*f, z*f);
-		}
-		Vector operator * (const Vector &pVector) const
-		{
-			return Vector(x*pVector.x, y*pVector.y, z*pVector.z);
-		}
-		Vector& operator *= (const Vector& p)
-		{
-			x *= p.x;
-			y *= p.y;
-			z *= p.z;
-			return *this;
-		}
-		Vector& operator /= (const Vector& p)
-		{
-			x /= p.x;
-			y /= p.y;
-			z /= p.z;
-			return *this;
-		}
-		Vector operator / (const Vector &pVector) const
-		{
-			return Vector(x / pVector.x, y / pVector.y, z / pVector.z);
-		}
-		bool operator < (const Vector& vector) const
-		{
-			if(x < vector.x) return true;
-			if(x == vector.x && y < vector.y) return true;
-			if(x == vector.x && y == vector.y && z < vector.z) return true;
-			return false;
-		}
-		bool operator > (const Vector& vector) const
-		{
-			if(x > vector.x) return true;
-			if(x == vector.x && y > vector.y) return true;
-			if(x == vector.x && y == vector.y && z > vector.z) return true;
-			return false;
-		}
-		float Dot(const Vector& vec) const
-		{
-			return x*vec.x + y*vec.y + z*vec.z;
-		}
-		Vector Cross(const Vector& p) const
-		{
-			return Vector(y*p.z - z*p.y, z*p.x - x*p.z, x*p.y - y*p.x);
-		}
-		static Vector Lerp(const Vector& start, const Vector& end, float delta)
-		{
-			Vector res;
-			res.x = Math::Lerp(start.x, end.x, delta);
-			res.y = Math::Lerp(start.y, end.y, delta);
-			res.z = Math::Lerp(start.z, end.z, delta);
-			return res;
-		}
-		inline float Normalize()
-		{
-			float fLength = sqrt(x*x + y*y + z*z);
-			if ( fLength > 1e-08 )
-			{
-				float fInvLength = 1.0f/fLength;
-				x *= fInvLength;
-				y *= fInvLength;
-				z *= fInvLength;
-			}
-			return fLength;
-		}
-		inline static Vector Normal(Vector v0, Vector v1, Vector v2)
-		{
-			Vector vVector1 = v2 - v0;
-			Vector vVector2 = v1 - v0;
-			Vector vNormal = vVector1.Cross(vVector2);
-			vNormal.Normalize();
-			return vNormal;
-		}
-	};
-	struct Quaternion
-	{
-		float x, y, z, w;
-		static const Quaternion IDENTITY;
-		static const Quaternion ZERO;
-		FORCEINLINE Quaternion()
-		{
-			x = 0.0f;
-			y = 0.0f;
-			z = 0.0f;
-			w = 1.0f;
-		}
-		FORCEINLINE Quaternion(float fx, float fy, float fz, float fw)
-		{
-			x = fx;
-			y = fy;
-			z = fz;
-			w = fw;
-		}
-		FORCEINLINE Quaternion(float rad, const Vector& axis)
-		{
-			float fHalfAngle = 0.5f*rad;
-			float fsin = sin(fHalfAngle);
-			w = cos(fHalfAngle);
-			x = fsin*axis.x;
-			y = fsin*axis.y;
-			z = fsin*axis.z;
-		}
-		FORCEINLINE Quaternion& operator= (const Quaternion& quat)
-		{
-			w = quat.w;
-			x = quat.x;
-			y = quat.y;
-			z = quat.z;
-			return *this;
-		}
-		FORCEINLINE bool operator== (const Quaternion& quat) const
-		{
-			return (quat.x == x) && (quat.y == y) && (quat.z == z) && (quat.w == w);
-		}
-		FORCEINLINE bool operator!= (const Quaternion& quat) const
-		{
-			return !operator==(quat);
-		}
-		FORCEINLINE Vector RotateVector(Vector v) const
-		{	
-			const Vector q(x, y, z);
-			const Vector t = q.Cross(v)*2.0f;
-			const Vector Result = v + (t*w) + q.Cross(t);
-			return Result;
-		}
-		FORCEINLINE Vector GetAxisX() const
-		{
-			return RotateVector(Vector(1.f, 0.f, 0.f));
-		}
-		FORCEINLINE Vector GetAxisY() const
-		{
-			return RotateVector(Vector(0.f, 1.f, 0.f));
-		}
-		FORCEINLINE Vector GetAxisZ() const
-		{
-			return RotateVector(Vector(0.f, 0.f, 1.f));
-		}
-		FORCEINLINE Vector GetForwardVector() const
-		{
-			return GetAxisX();
-		}
-		FORCEINLINE Vector GetRightVector() const
-		{
-			return GetAxisY();
-		}
-		FORCEINLINE Vector GetUpVector() const
-		{
-			return GetAxisZ();
-		}
-		FORCEINLINE Quaternion operator*(const Quaternion& q) const
-		{
-			Quaternion res;
-			res.x = (q.w * x) + (q.x * w) + (q.y * z) - (q.z * y);
-			res.y = (q.w * y) - (q.x * z) + (q.y * w) + (q.z * x);
-			res.z = (q.w * z) + (q.x * y) - (q.y * x) + (q.z * w);
-			res.w = (q.w * w) - (q.x * x) - (q.y * y) - (q.z * z);
-			return res;
-		}
-		FORCEINLINE Quaternion Inverse() const
-		{
-			return Quaternion(-x, -y, -z, w);
-		}
-		FORCEINLINE Vector operator*(const Vector& v) const
-		{
-			return RotateVector(v);
-		}
-	};
-
 	__declspec(align(16)) struct Matrix4
 	{
 		union
@@ -305,7 +18,13 @@ namespace Led
 				float _30, _31, _32, _33;
 			};
 		};
-		Matrix4() { }
+		Matrix4()
+		{
+			_00 = 1.0f; _01 = 0.0f; _02 = 0.0f; _03 = 0.0f;
+			_10 = 0.0f; _11 = 1.0f; _12 = 0.0f; _13 = 0.0f;
+			_20 = 0.0f; _21 = 0.0f; _22 = 1.0f; _23 = 0.0f;
+			_30 = 0.0f; _31 = 0.0f; _32 = 0.0f; _33 = 1.0f;
+		}
 		Matrix4(float v00, float v01, float v02, float v03, float v10, float v11, float v12, float v13, float v20, float v21, float v22, float v23, float v30, float v31, float v32, float v33)
 		{
 			_00 = v00; _01 = v01; _02 = v02; _03 = v03;
@@ -568,16 +287,17 @@ namespace Led
 		r.m[3][3] = 1.0f;
 		return r;
 	}
+
 	class Transform
 	{
 	protected:
-		Vector _position;
+		float3 _position;
 		Quaternion _rotation;
-		Vector _scale;
+		float3 _scale;
 	public:
 		Transform()
 		{
-			_scale = Vector(1.0f, 1.0f, 1.0f);
+			_scale = float3(1.0f, 1.0f, 1.0f);
 		}
 		Matrix ToMatrix()
 		{
@@ -666,11 +386,11 @@ namespace Led
 			}
 			return out;
 		}
-		__inline void SetPosition(const Vector& position)
+		__inline void SetPosition(const float3& position)
 		{
 			_position = position;
 		}
-		__inline void Move(const Vector& position, bool isRelative = false)
+		__inline void Move(const float3& position, bool isRelative = false)
 		{
 			if(isRelative)
 				_position += _rotation.Inverse()*position;
@@ -691,11 +411,11 @@ namespace Led
 			else
 				_rotation = _rotation*rotation;
 		}
-		__inline void SetScale(const Vector& scale)
+		__inline void SetScale(const float3& scale)
 		{
 			_scale = scale;
 		}
-		__inline Vector GetPosition() const
+		__inline float3 GetPosition() const
 		{
 			return _position;
 		}
@@ -703,7 +423,7 @@ namespace Led
 		{
 			return _rotation;
 		}
-		__inline Vector GetScale() const
+		__inline float3 GetScale() const
 		{
 			return _scale;
 		}

@@ -185,7 +185,7 @@ namespace Led
 	void RenderDX12::Signal()
 	{
 		_fenceValue[_frameIndex]++;
-		HRESULT hr = _commandQueue->Signal(_fence[_frameIndex], _fenceValue[_frameIndex]);
+		HRESULT hr = _commandQueue->Signal(_fence, _fenceValue[_frameIndex]);
 		Debug::ThrowIfFailed(hr);
 	}
 	void RenderDX12::WaitForPreviousFrame()
@@ -194,15 +194,15 @@ namespace Led
 		_frameIndex = _swapChain->GetCurrentBackBufferIndex();// swap the current rtv buffer index so we draw on the correct buffer
 
 		// if the current fence value is still less than "fenceValue", then we know the GPU has not finished executing the command queue since it has not reached the "commandQueue->Signal(fence, fenceValue)" command
-		if(_fence[_frameIndex]->GetCompletedValue() < _fenceValue[_frameIndex])
+		if(_fence->GetCompletedValue() < _fenceValue[_frameIndex])
 		{
-			HRESULT hr = _fence[_frameIndex]->SetEventOnCompletion(_fenceValue[_frameIndex], _fenceEvent);// we have the fence create an event which is signaled once the fence's current value is "fenceValue"
+			HRESULT hr = _fence->SetEventOnCompletion(_fenceValue[_frameIndex], _fenceEvent);// we have the fence create an event which is signaled once the fence's current value is "fenceValue"
 			Debug::ThrowIfFailed(hr);
 			WaitForSingleObject(_fenceEvent, INFINITE);// We will wait until the fence has triggered the event that it's current value has reached "fenceValue". once it's value has reached "fenceValue", we know the command queue has finished executing
 		}
 		_fenceValue[_frameIndex]++;// increment fenceValue for next frame
 	}
-	bool RenderDX12::Initialize(class Window *window, uint width, uint height)
+	bool RenderDX12::Initialize(Window *window, uint width, uint height)
 	{
 		if(SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&_debug))))
 		{
@@ -307,7 +307,6 @@ namespace Led
 
 		_renderTargets.resize(_frameBufferCount);
 		_commandAllocator.resize(_frameBufferCount);
-		_fence.resize(_frameBufferCount);
 		_fenceValue.resize(_frameBufferCount);
 		D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};
 		rtvHeapDesc.NumDescriptors = _frameBufferCount;
@@ -316,53 +315,37 @@ namespace Led
 		hr = _device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&_rtvDescriptorHeap));
 		Debug::ThrowIfFailed(hr);
 
-		_rtvDescriptorSize = _device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-
-		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle(_rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
-		for (uint i = 0; i < _frameBufferCount; i++)
-    {
-      hr = _swapChain->GetBuffer(i, IID_PPV_ARGS(&_renderTargets[i]));// first we get the n'th buffer in the swap chain and store it in the n'th position of our ID3D12Resource array
-      Debug::ThrowIfFailed(hr);
-
-      _device->CreateRenderTargetView(_renderTargets[i], nullptr, rtvHandle);// the we "create" a render target view which binds the swap chain buffer (ID3D12Resource[n]) to the rtv handle
-
-      // we increment the rtv handle by the rtv descriptor size we got above
-			rtvHandle.ptr = SIZE_T(INT64(rtvHandle.ptr) + INT64(1)*INT64(_rtvDescriptorSize));
-    }
-
-		_depthStencil = new DepthStencil();
-		_depthStencil->Create(width, height);
-
-		for (uint i = 0; i < _frameBufferCount; i++)
-		{
-			hr = _device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&_commandAllocator[i]));
-			Debug::ThrowIfFailed(hr);
-		}
+		LoadSizeDependentResources();
 
 		// create the command list with the first allocator
     hr = _device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, _commandAllocator[0], NULL, IID_PPV_ARGS(&_commandList));
     Debug::ThrowIfFailed(hr);
 
+		Debug::ThrowIfFailed(_device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&_fence)));
 		for(uint i = 0; i < _frameBufferCount; i++)
-    {
-      hr = _device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&_fence[i]));
-      Debug::ThrowIfFailed(hr);
       _fenceValue[i] = 0;
-    }
     _fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
     Debug::ThrowIfFailed(hr);
 
+		UpdateViewAndScissor();
+
+		Debug::Log(L"Render initialization is complete");
+
+		return true;
+	}
+
+	void RenderDX12::UpdateViewAndScissor()
+	{
+		uint width = _swapDesc.BufferDesc.Width;
+		uint height = _swapDesc.BufferDesc.Height;
 		_viewport = RenderViewport();
 		_viewport.SetWidth((float)width);
 		_viewport.SetHeight((float)height);
 		_scissor = Scissor();
 		_scissor.SetRight(width);
 		_scissor.SetBottom(height);
-
-		Debug::Log(L"Render initialization is complete");
-
-		return true;
 	}
+
 	void RenderDX12::Begin(const Color &clear, float depth)
 	{
 		BarrierTransition(_renderTargets[_frameIndex], D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
@@ -408,8 +391,7 @@ namespace Led
 		BOOL fs = false;
 		if(_swapChain->GetFullscreenState(&fs, nullptr))
 			_swapChain->SetFullscreenState(false, nullptr);
-		for(ID3D12Fence* res: _fence)
-			res->Release();
+		_fence->Release();
 		if(_commandList)
 			_commandList->Release();
 		for(ID3D12CommandAllocator* res: _commandAllocator)
@@ -451,9 +433,52 @@ namespace Led
 	{
 
 	}
+
+	void RenderDX12::LoadSizeDependentResources()
+	{
+		uint width = _swapDesc.BufferDesc.Width;
+		uint height = _swapDesc.BufferDesc.Height;
+		UpdateViewAndScissor();
+
+		_rtvDescriptorSize = _device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle(_rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+		for (uint i = 0; i < _frameBufferCount; i++)
+    {
+      Debug::ThrowIfFailed(_swapChain->GetBuffer(i, IID_PPV_ARGS(&_renderTargets[i])));// first we get the n'th buffer in the swap chain and store it in the n'th position of our ID3D12Resource array
+      _device->CreateRenderTargetView(_renderTargets[i], nullptr, rtvHandle);// the we "create" a render target view which binds the swap chain buffer (ID3D12Resource[n]) to the rtv handle
+
+      // we increment the rtv handle by the rtv descriptor size we got above
+			rtvHandle.ptr = SIZE_T(INT64(rtvHandle.ptr) + INT64(1)*INT64(_rtvDescriptorSize));
+    }
+
+		_depthStencil = new DepthStencil();
+		_depthStencil->Create(width, height);
+		for(uint i = 0; i < _frameBufferCount; i++)
+			Debug::ThrowIfFailed(_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&_commandAllocator[i])));
+	}
+
 	void RenderDX12::Resize(uint width, uint height)
 	{
+		WaitForPreviousFrame();
+		for (UINT n = 0; n < _frameBufferCount; n++)
+    {
+      _renderTargets[n]->Release();
+			_renderTargets[n] = nullptr;
+      _fenceValue[n] = _fenceValue[_frameIndex];
+    }
 
+    // Resize the swap chain to the desired dimensions.
+    DXGI_SWAP_CHAIN_DESC desc = {};
+    _swapChain->GetDesc(&desc);
+    Debug::ThrowIfFailed(_swapChain->ResizeBuffers(_frameBufferCount, width, height, desc.BufferDesc.Format, desc.Flags));
+		_swapChain->GetDesc(&_swapDesc);
+
+    BOOL fullscreenState;
+    Debug::ThrowIfFailed(_swapChain->GetFullscreenState(&fullscreenState, nullptr));
+    //m_windowedMode = !fullscreenState;
+
+    _frameIndex = _swapChain->GetCurrentBackBufferIndex();
+		LoadSizeDependentResources();
 	}
 
 }

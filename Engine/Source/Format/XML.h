@@ -21,8 +21,4 @@ namespace Led
 		uint GetChildrenCount();
 		XMLNode *GetChild(uint num);
 	};
-	class FormatXML
-	{
-	
-	};
 }

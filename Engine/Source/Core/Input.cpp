@@ -186,8 +186,13 @@ namespace Led
 		}
 		return "";
 	}
-	void Input::ClipToWindow()
+	void Input::ClipToWindow(bool enable)
   {
+		if(!enable)
+		{
+			ClipCursor(nullptr);
+			return;
+		}
 		HWND mWindow = Engine::Get()->GetWindow()->GetHWND();
     assert(mWindow != nullptr);
 
@@ -240,10 +245,7 @@ namespace Led
 		break;
 		case WM_KEYDOWN:
 			KeyIndex = static_cast<KEY_TYPE>(wParam);
-			if(!z_pressed[KeyIndex])
-				z_hit[KeyIndex] = true;
-			else
-				z_hit[KeyIndex] = false;
+			z_hit[KeyIndex] = !z_pressed[KeyIndex];
 			z_pressed[KeyIndex] = true;
 			GetKeyboardState(lpKeyState);
 			ToUnicode((uint)wParam, HIWORD(lParam) & 0xFF, lpKeyState, buffer, 1, 0);
@@ -311,5 +313,10 @@ namespace Led
 				_lastCursor = z_cursor;
 		}
 		++_frame;
+	}
+
+	void Input::Clear()
+	{
+		memset(z_hit, 0, sizeof(z_hit));
 	}
 }

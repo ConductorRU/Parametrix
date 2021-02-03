@@ -15,14 +15,14 @@ namespace Led
 	public:
 		enum INPUT_LAYOUT
 		{
-			POSITION  = 0,//float3
-			NORMAL    = 1,//float3
-			COLOR     = 2,//float4
-			TEXCOORD0 = 3,//float2
-			TANGENT   = 4,//float3
-			BINORMAL  = 5,//float3
-			WEIGHT    = 6,//float4
-			COUNT     = 7,
+			POSITION    = 0,//float3
+			NORMAL      = 1,//float3
+			COLOR       = 2,//float4
+			TEXCOORD0   = 3,//float2
+			TANGENT     = 4,//float3
+			BINORMAL    = 5,//float3
+			WEIGHT      = 6,//float4
+			COUNT       = 7,
 		};
 	private:
 		vector<D3D12_INPUT_ELEMENT_DESC> _layout;
@@ -39,6 +39,7 @@ namespace Led
 		~InputLayout();
 		void Add(LPCSTR name, uint index, DXGI_FORMAT format, uint slot, uint offset, D3D12_INPUT_CLASSIFICATION iClass, uint stepRate);
 		void Add(LPCSTR name, DXGI_FORMAT format, INPUT_LAYOUT type = COUNT);
+		class Vertex* CreateVertex();
 
 	};
 	class RenderShader
@@ -124,13 +125,23 @@ namespace Led
 		void SetAntialiasedLine(bool enable);
 		void SetForcedSample(UINT count);
 		void SetConservativeRaster(UINT mode);
+		void SetBlendEnable(bool enable);
+		void SetBlendOp(UINT op);
+		void SetBlendOpAlpha(UINT op);
+		void SetBlend(UINT srcBlend, UINT dstBlend);
+		void SetSrcBlend(UINT blend);
+		void SetDestBlend(UINT blend);
+		void SetBlendAlpha(UINT srcBlend, UINT dstBlend);
+		void SetSrcBlendAlpha(UINT blend);
+		void SetDestBlendAlpha(UINT blend);
 		void Prepare();
 		void Render();
 	};
 
-	struct Vertex
+	class Vertex
 	{
 		friend class RenderMesh;
+		friend class InputLayout;
 	private:
 		char *_data;
 		InputLayout *_layout;
@@ -138,32 +149,21 @@ namespace Led
 	public:
 		uint GetIndex() const { return _index; };
 		~Vertex();
-		void Set(uint offset, const struct Vector &data);
+		void Set(uint offset, const struct float3 &data);
 		void Set(uint offset, const struct Color &data);
-		void SetPosition(const Vector &pos);
-		void SetNormal(const Vector &nor);
+		void SetPosition(const float3 &pos);
+		void SetPosition2D(const struct float2 &pos);
+		void SetPosition2D(const float u, const float v);
+		void SetNormal(const float3 &nor);
 		void SetColor(const Color &color);
-		void SetUV(const struct Vector2 &uv);
-		Vector GetPosition() const;
-		Vector GetNormal() const;
+		void SetUV(const float2 &uv);
+		void SetUV(const float u, const float v);
+		float3 GetPosition() const;
+		float3 GetNormal() const;
 		Color GetColor() const;
-		Vector2 GetUV() const;
+		float2 GetUV() const;
 	};
 
-	struct Poly
-	{
-		vector<Vertex*> list;
-		void SetNormal(const Vector& nor);
-		void SetColor(const Color& color);
-		void SetUV(const initializer_list<Vector2> uv);
-	};
-
-	struct Polygons
-	{
-		vector<Poly> list;
-		void SetNormal(const Vector& nor);
-		void SetColor(const Color& color);
-	};
 	class ConstantBuffer
 	{
 	private:
@@ -186,35 +186,36 @@ namespace Led
 	class RenderMesh
 	{
 	private:
-		vector<Vertex*> _vertex;
-		vector<uint> _index;
 		ID3D12Resource* _buffer;
 		ID3D12Resource* _bufferHeap;
 		ID3D12Resource* _indexBuffer;
 		ID3D12Resource* _indexBufferHeap;
 		D3D12_VERTEX_BUFFER_VIEW _view;
 		D3D12_INDEX_BUFFER_VIEW _iview;
+		D3D_PRIMITIVE_TOPOLOGY _topology;
 		InputLayout* _inputLayout;
 		bool _isDataUpdate;
 		void _Prepare();
 		bool _isCPU;
 		ConstantBuffer *_constBuffer[5];
 	protected:
+		vector<Vertex*> _vertex;
+		vector<uint> _index;
 		void SetMaterial(RenderMaterial *mat);
 	public:
 		InputLayout *GetInputLayout() { return _inputLayout; };
 		RenderMesh(InputLayout* il);
 		~RenderMesh();
-		Vertex *CreateVertex(const Vector &pos);
+		Vertex *CreateVertex();
 		uint AddIndex(uint i0);
 		uint AddTriangle(uint i0, uint i1, uint i2);
 		uint AddQuad(uint i0, uint i1, uint i2, uint i3);
-		Poly AddTriangle(const Vector &pos0, const Vector &pos1, const Vector &pos2);
-		Poly AddQuad(const Vector &pos0, const Vector &pos1, const Vector &pos2, const Vector &pos3);
 		void UpdateBuffer();
 		void Render(RenderMaterial *mat);
+		void SetTopology(D3D_PRIMITIVE_TOPOLOGY type);
 		void SetConst(SHADER_TYPE sType, const string& bufferName, const string& bufferField, uchar* data, uint size);
-		void SetConst(SHADER_TYPE sType, const string& bufferName, const string& bufferField, const struct Vector& data);
+		void SetConst(SHADER_TYPE sType, const string& bufferName, const string& bufferField, const struct float3& data);
+		void SetConst(SHADER_TYPE sType, const string& bufferName, const string& bufferField, const struct Vector4& data);
 		void SetConst(SHADER_TYPE sType, const string& bufferName, const string& bufferField, const struct Color& data);
 		void SetConst(SHADER_TYPE sType, const string& bufferName, const string& bufferField, const struct Matrix& data);
 		void SetConst(SHADER_TYPE sType, const string& bufferName, const string& bufferField, const struct Matrix4& data);

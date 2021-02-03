@@ -9,6 +9,8 @@ namespace Led
 		wstring _name;
 	public:
 		virtual void BeforeRender() {};
+		virtual void Start() {};
+		virtual void Update() {};
 		virtual void Render(class Scene* scene) {};
 		virtual bool BeforeAdd(Scene* scene) { return true; };
 		virtual void AfterAdd(Scene* scene) {};
@@ -31,7 +33,6 @@ namespace Led
 		Transform &GetWorldTransform();
 		void AddChild(Actor *actor);
 		void RemoveChild(Actor *actor);
-
 	};
 	class Actor2d: public ActorBase
 	{
