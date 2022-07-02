@@ -30,12 +30,6 @@
     <Filter Include="Исходные файлы\Format">
       <UniqueIdentifier>{8940bada-cb3c-4c7e-93b9-6acb36fbbb9f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Исходные файлы\Universe">
-      <UniqueIdentifier>{4769215a-8e8f-4fa6-b68e-cd131576582d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Исходные файлы\Universe\Character">
-      <UniqueIdentifier>{46d1045b-2a6e-4639-969e-2eebdc027473}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Исходные файлы\2D">
       <UniqueIdentifier>{0462736d-b840-46ef-be9e-28cfa44e297e}</UniqueIdentifier>
     </Filter>
@@ -101,12 +95,6 @@
     <ClCompile Include="Source\Material\Texture.cpp">
       <Filter>Исходные файлы\Material</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Core\Reflection.cpp">
-      <Filter>Исходные файлы\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Universe\Character\Character.cpp">
-      <Filter>Исходные файлы\Universe\Character</Filter>
-    </ClCompile>
     <ClCompile Include="Source\2D\Actor2D.cpp">
       <Filter>Исходные файлы\2D</Filter>
     </ClCompile>
@@ -124,6 +112,9 @@
     </ClCompile>
     <ClCompile Include="Source\Core\Event.cpp">
       <Filter>Исходные файлы\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\2D\FreeType.cpp">
+      <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -214,18 +205,6 @@
     <ClInclude Include="Source\Material\Texture.h">
       <Filter>Исходные файлы\Material</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Core\Reflection.h">
-      <Filter>Исходные файлы\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Universe\Character\Character.h">
-      <Filter>Исходные файлы\Universe\Character</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Universe\Character\Header.h">
-      <Filter>Исходные файлы\Universe\Character</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Universe\Header.h">
-      <Filter>Исходные файлы\Universe</Filter>
-    </ClInclude>
     <ClInclude Include="Source\2D\Actor2D.h">
       <Filter>Исходные файлы\2D</Filter>
     </ClInclude>
@@ -250,6 +229,7 @@
     <ClInclude Include="Source\Core\Event.h">
       <Filter>Исходные файлы\Core</Filter>
     </ClInclude>
+    <ClInclude Include="Source\2D\FreeType.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Build.bat">

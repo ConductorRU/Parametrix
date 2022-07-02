@@ -352,7 +352,8 @@ namespace Led
 
 		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle(_rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 		rtvHandle.ptr = SIZE_T(INT64(rtvHandle.ptr) + INT64(_frameIndex)*INT64(_rtvDescriptorSize));
-		_commandList->OMSetRenderTargets(1, &rtvHandle, false, &_depthStencil->_dsDescriptor->GetCPUDescriptorHandleForHeapStart());
+		D3D12_CPU_DESCRIPTOR_HANDLE heap = _depthStencil->_dsDescriptor->GetCPUDescriptorHandleForHeapStart();
+		_commandList->OMSetRenderTargets(1, &rtvHandle, false, &heap);
 		_commandList->ClearRenderTargetView(rtvHandle, (float*)&clear, 0, nullptr);
 		_commandList->ClearDepthStencilView(_depthStencil->_dsDescriptor->GetCPUDescriptorHandleForHeapStart(), D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 		_commandList->RSSetViewports(1, (D3D12_VIEWPORT*)&_viewport); // set the viewports

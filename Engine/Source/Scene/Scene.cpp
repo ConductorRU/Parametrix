@@ -30,6 +30,8 @@ namespace Led
 	{
 		for(Actor* a: _actors)
 			delete a;
+		for (Canvas* a : _canvas)
+			delete a;
 	}
 
 	bool Scene::IsActor(Actor *actor)

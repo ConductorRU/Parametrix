@@ -1,111 +1,6 @@
 #include "Source/Parametrix.h"
 #include "Game.h"
 
-float HumanGenome::GetHeight()
-{
-	float h = 1.8f;
-	if(gender == GENDER::FEMALE)
-		h = 1.7f;
-	if(age < 18)
-		h = max(0.1f, h*((float)age/18.0f));
-	return h;
-}
-
-Human::Human()
-{
-	_mesh = nullptr;
-}
-Human::~Human()
-{
-	if(_mesh)
-		delete _mesh;
-}
-
-void Human::Init(InputLayout *ia, Material* mat, HumanGenome *genome)
-{
-	_genome = genome;
-	_mesh = new Mesh(ia);
-	ParaCylinder cyl;
-	cyl.height = _genome->GetHeight() - 0.5f;
-	if(_genome->gender == GENDER::FEMALE)
-		cyl.SetRadius(0.5f, 0.2f);
-	else
-		cyl.SetRadius(0.2f, 0.5f);
-	cyl.sides = 6;
-
-	ParaSphere head;
-	head.radius = 0.25f;
-	head.sides = 16;
-
-	ParaSphere eye;
-	eye.radius = 0.05f;
-	eye.sides = 8;
-
-	Color col = Color::Near(Color(0.0f, 0.0f, 1.0f), Color(0.2f, 0.2f, 1.0f));
-	Polygons polys = cyl.Generate(_mesh);
-	polys.SetColor(col);
-
-	polys = head.Generate(_mesh, float3(0.0f, cyl.height + 0.25f, 0.0f));
-	polys.SetColor(col);
-
-	polys = eye.Generate(_mesh, float3(0.1f, cyl.height + 0.25f, -0.2f));
-	polys.SetColor(Color(1.0f, 1.0f, 1.0f));
-	polys = eye.Generate(_mesh, float3(-0.1f, cyl.height + 0.25f, -0.2f));
-	polys.SetColor(Color(1.0f, 1.0f, 1.0f));
-
-	_mesh->SetMaterial(mat);
-	AddChild(_mesh);
-}
-
-void Human::Update()
-{
-	//GetLocalTransform().Rotate(Quaternion(Engine::Get()->GetTime()->spf, float3::ONE_Y), true);
-}
-
-void Human::BeforeRender()
-{
-	if(_mesh)
-		_mesh->BeforeRender();
-}
-
-void Human::Render(Scene* scene)
-{
-	if(_mesh)
-		_mesh->Render(scene);
-}
-
-Plant::Plant()
-{
-	_mesh = nullptr;
-}
-Plant::~Plant()
-{
-	if(_mesh)
-		delete _mesh;
-}
-void Plant::Init(InputLayout *ia, Material* mat)
-{
-	_mesh = new Mesh(ia);
-	ParaCone cyl;
-	cyl.height = 1.0f;
-	cyl.radius = 0.5f;
-	cyl.sides = 4;
-	Polygons polys = cyl.Generate(_mesh);
-	polys.SetColor(Color::Near(Color(0.0f, 0.8f, 0.2f), Color(0.0f, 0.4f, 0.2f)));
-	_mesh->SetMaterial(mat);
-	AddChild(_mesh);
-}
-void Plant::BeforeRender()
-{
-	if(_mesh)
-		_mesh->BeforeRender();
-}
-void Plant::Render(Scene* scene)
-{
-	if(_mesh)
-		_mesh->Render(scene);
-}
-
 Game::Game()
 {
 	_engine = new Engine;
@@ -129,6 +24,9 @@ Game::Game()
 	mat->SetPixelShader(ps);
 	mat->SetInputLayout(ia);
 	mat->Prepare();
+	//Texture* tex = new Texture();
+	//tex->Create(16, 16);
+
 
 	InputLayout* iaGUI = man->CreateInputLayout();
 	iaGUI->Add("POSITION", DXGI_FORMAT_R32G32_FLOAT, InputLayout::POSITION);
@@ -160,80 +58,22 @@ Game::Game()
 	};
 	scene->AddCanvas(canvas);
 
-	HumanGenome* genM = new HumanGenome;
-	genM->age = 20;
-	genM->gender = GENDER::MALE;
-	HumanGenome* genF = new HumanGenome;
-	genF->age = 20;
-	genF->gender = GENDER::FEMALE;
-
-	Human* h = new Human();
-	h->Init(ia, mat, genM);
-	h->GetLocalTransform().SetPosition(float3(2.0f, 0.0f, 0.0f));
-	scene->AddActor(h);
-
-	h = new Human();
-	h->Init(ia, mat, genF);
-	h->GetLocalTransform().SetPosition(float3(4.0f, 0.0f, 0.0f));
-	scene->AddActor(h);
-
-
-	for(int i = 0; i < 10; ++i)
-	{
-		for(int j = 0; j < 10; ++j)
-		{
-			Plant* h = new Plant();
-			h->Init(ia, mat);
-			h->GetLocalTransform().SetPosition(float3((float)i, 0.0f, (float)j));
-			scene->AddActor(h);
-		}
-	}
-
-
-	Mesh* mesh = new Mesh(ia);
+	_mesh = new Mesh(ia);
 	ParaBox box;
 	box.size = float3(2.0f, 2.0f, 2.0f);
-	Polygons polys = box.Generate(mesh);
+	Polygons polys = box.Generate(_mesh);
 	polys.SetColor(Color(0.0f, 0.0f, 1.0f));
 
-	Mesh* meshPlane = new Mesh(ia);
-	ParaPlane plane;
-	plane.size = float2(2000.0f, 2000.0f);
-	polys = plane.Generate(meshPlane);
-	polys.SetColor(Color(0.0f, 0.8f, 0.2f));
-
-	Mesh* meshCyl = new Mesh(ia);
-	ParaCylinder cyl;
-	cyl.height = 1.0f;
-	cyl.SetRadius(0.5f, 0.1f);
-	cyl.sides = 12;
-	polys = cyl.Generate(meshCyl);
-	polys.SetColor(Color(1.0f, 0.2f, 0.2f));
-	meshCyl->GetLocalTransform().SetPosition(float3(4.0f, 0.0f, 4.0f));
-
-	Mesh* meshSphere = new Mesh(ia);
-	ParaSphere sphere;
-	sphere.sides = 48;
-	polys = sphere.Generate(meshSphere);
-	polys.SetColor(Color(1.0f, 0.0f, 0.0f));
-	meshCyl->GetLocalTransform().SetPosition(float3(6.0f, 0.0f, 6.0f));
 
 		//mesh->GetTransform().SetPosition(float3(Random(-10.0f, 10.0f), Random(-10.0f, 10.0f), Random(-10.0f, 10.0f)));
-	mesh->SetMaterial(mat);
-	meshPlane->SetMaterial(mat);
-	meshCyl->SetMaterial(mat);
-	meshSphere->SetMaterial(mat);
-	mesh->AddChild(meshCyl);
-	scene->AddActor(mesh);
-	scene->AddActor(meshPlane);
-	scene->AddActor(meshCyl);
-	scene->AddActor(meshSphere);
+	_mesh->SetMaterial(mat);
+	scene->AddActor(_mesh);
 
 	_cam = new Camera;
 	scene->AddActor(_cam);
 
 		
-	_cam->GetLocalTransform().SetPosition(float3(0.0f, 10.0f, -40.0f));
+	_cam->GetLocalTransform().SetPosition(float3(0.0f, 1.0f, -5.0f));
 	_cam->SetRange(0.01f, 10000.0f);
 	_engine->ShowCursor(true);
 	Point2 cur = _engine->GetInput()->GetCursorPos();
@@ -241,10 +81,12 @@ Game::Game()
 	//_engine->GetInput()->ClipToWindow();
 
 }
+
 Game::~Game()
 {
 	delete _engine;
 }
+
 void Game::Update()
 {
 	float t = 0.0f;
@@ -285,6 +127,7 @@ void Game::Update()
 			_engine->Exit();
 		Time *time = _engine->GetTime();
 		static int sec = time->secCount;
+		_mesh->GetLocalTransform().Rotate(Quaternion(1.0f * time->spf, float3::ONE_Y));
 		if(sec == time->secCount)
 		{
 			Debug::Log(to_string(time->fps) + " " + to_string(time->spf));
@@ -292,8 +135,4 @@ void Game::Update()
 		}
 		_engine->Render();
 	}
-}
-Human* Game::CreateHuman()
-{
-	return nullptr;
 }

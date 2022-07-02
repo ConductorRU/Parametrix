@@ -28,26 +28,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -113,7 +113,11 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freetype-2.12.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -143,20 +147,24 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freetype-2.12.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\2D\Actor2D.cpp" />
     <ClCompile Include="Source\2D\Canvas.cpp" />
+    <ClCompile Include="Source\2D\FreeType.cpp" />
     <ClCompile Include="Source\2D\Shape.cpp" />
     <ClCompile Include="Source\Core\Engine.cpp" />
     <ClCompile Include="Source\Core\Event.cpp" />
     <ClCompile Include="Source\Core\Input.cpp" />
-    <ClCompile Include="Source\Core\Reflection.cpp" />
     <ClCompile Include="Source\Core\Window.cpp" />
     <ClCompile Include="Source\Format\File.cpp" />
     <ClCompile Include="Source\Format\XML.cpp" />
@@ -180,11 +188,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Source\Universe\Character\Character.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\2D\Actor2D.h" />
     <ClInclude Include="Source\2D\Canvas.h" />
+    <ClInclude Include="Source\2D\FreeType.h" />
     <ClInclude Include="Source\2D\Header.h" />
     <ClInclude Include="Source\2D\Shape.h" />
     <ClInclude Include="Source\Core\Debug.h" />
@@ -192,7 +200,6 @@
     <ClInclude Include="Source\Core\Event.h" />
     <ClInclude Include="Source\Core\Header.h" />
     <ClInclude Include="Source\Core\Input.h" />
-    <ClInclude Include="Source\Core\Reflection.h" />
     <ClInclude Include="Source\Core\Window.h" />
     <ClInclude Include="Source\Format\File.h" />
     <ClInclude Include="Source\Format\Header.h" />
@@ -221,9 +228,6 @@
     <ClInclude Include="Source\Scene\Mesh.h" />
     <ClInclude Include="Source\Scene\Scene.h" />
     <ClInclude Include="Source\stdafx.h" />
-    <ClInclude Include="Source\Universe\Character\Character.h" />
-    <ClInclude Include="Source\Universe\Character\Header.h" />
-    <ClInclude Include="Source\Universe\Header.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Build.bat" />

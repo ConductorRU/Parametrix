@@ -48,10 +48,15 @@
 #include <windows.h>
 #include <windowsx.h>
 
+#include <ft2build.h>
+#include FT_FREETYPE_H 
+
+#pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib,"d3dcompiler.lib")
 #pragma comment(lib,"dxguid.lib")
 #pragma comment(lib,"dxgi.lib")
+#pragma comment(lib,"freetype.lib")
 
 using namespace std;
 typedef unsigned __int8 uchar;

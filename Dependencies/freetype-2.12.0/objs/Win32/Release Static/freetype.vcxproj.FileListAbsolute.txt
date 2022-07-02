@@ -1,0 +1,1 @@
+C:\DirectX\Parametrix\Dependencies\freetype-2.12.0\objs\Win32\Release Static\freetype.lib

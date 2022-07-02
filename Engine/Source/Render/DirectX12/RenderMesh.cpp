@@ -281,32 +281,75 @@ namespace Led
 	}
 	void RenderTexture::Create(uint width, uint height)
 	{
-		/*
 		RenderDX12 *ren = RenderDX12::Get();
-		D3D12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_B8G8R8A8_UNORM, width, height, 1, 1, 1, 0, D3D12_RESOURCE_FLAG_NONE, D3D12_TEXTURE_LAYOUT_UNKNOWN, 0);
-		D3D12_RESOURCE_DESC resDesc = CD3DX12_RESOURCE_DESC(D3D12_RESOURCE_DIMENSION_BUFFER, 0, width*height*4, 1, 1, 1, DXGI_FORMAT_UNKNOWN, 1, 0, D3D12_TEXTURE_LAYOUT_ROW_MAJOR, D3D12_RESOURCE_FLAG_NONE);
-		Debug::ThrowIfFailed(ren->_device->CreateCommittedResource(&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE, &resDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&_buffer)));
+		D3D12_RESOURCE_DESC textureDesc = {};
+		textureDesc.MipLevels = 1;
+		textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		textureDesc.Width = width;
+		textureDesc.Height = height;
+		textureDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+		textureDesc.DepthOrArraySize = 1;
+		textureDesc.SampleDesc.Count = 1;
+		textureDesc.SampleDesc.Quality = 0;
+		textureDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+		textureDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 
+		D3D12_HEAP_PROPERTIES textureHeap = {};
+		textureHeap.Type = D3D12_HEAP_TYPE_UPLOAD;
+		textureHeap.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+		textureHeap.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+		textureHeap.CreationNodeMask = 1;
+		textureHeap.VisibleNodeMask = 1;
+
+		Debug::ThrowIfFailed(ren->_device->CreateCommittedResource(&textureHeap, D3D12_HEAP_FLAG_NONE, &textureDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&_buffer)));
 		_buffer->SetName(L"Texure");
-		char *c = new char[width*height*4];
-		memset(c, 255, width*height * 4);
+
+		UINT64 uploadBufferSize = 0;
+
+		ren->_device->GetCopyableFootprints(&textureDesc, 0, 1, 0, nullptr, nullptr, nullptr, &uploadBufferSize);
+
+		D3D12_HEAP_PROPERTIES resHeap = {};
+		resHeap.Type = D3D12_HEAP_TYPE_UPLOAD;
+		resHeap.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+		resHeap.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+		resHeap.CreationNodeMask = 1;
+		resHeap.VisibleNodeMask = 1;
+
+		D3D12_RESOURCE_DESC resDesc = {};
+		resDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+		resDesc.Alignment = 0;
+		resDesc.Width = uploadBufferSize;
+		resDesc.Height = 1;
+		resDesc.DepthOrArraySize = 1;
+		resDesc.MipLevels = 1;
+		resDesc.Format = DXGI_FORMAT_UNKNOWN;
+		resDesc.SampleDesc.Count = 1;
+		resDesc.SampleDesc.Quality = 0;
+		resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+		resDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+
+		ID3D12Resource* textureUploadHeap;
+		Debug::ThrowIfFailed(ren->_device->CreateCommittedResource(&resHeap, D3D12_HEAP_FLAG_NONE, &resDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&textureUploadHeap)));
+
+		char* c = new char[width * height * 4];
+		memset(c, 255, width * height * 4);
 		SetRaw(c, width, height);
 		delete[] c;
 
 		D3D12_DESCRIPTOR_HEAP_DESC desc;
 		desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-		desc.NumDescriptors = 10;
-    desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-    desc.NodeMask = 0;
+		desc.NumDescriptors = 1;
+		desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+		desc.NodeMask = 0;
 		Debug::ThrowIfFailed(ren->_device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&_srvHeap)));
 
 		desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER;
-		desc.NumDescriptors = 10;
-    desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-    desc.NodeMask = 0;
+		desc.NumDescriptors = 1;
+		desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+		desc.NodeMask = 0;
 		Debug::ThrowIfFailed(ren->_device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&_samplerHeap)));
 
-		_srvDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+		_srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		_srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 		_srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 		_srvDesc.Texture2D.MipLevels = 1; // No MIP
@@ -314,9 +357,11 @@ namespace Led
 		_srvDesc.Texture2D.PlaneSlice = 0;
 		_srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
 
+		uint slot = 0;
+		uint step = 0;
 		auto start = _srvHeap->GetCPUDescriptorHandleForHeapStart().ptr;
-		auto step = ren->_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-		start += step*(slot + 1);
+		//auto step = ren->_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+		//start += step*(slot + 1);
 		ren->_device->CreateShaderResourceView(_buffer, &_srvDesc, {start});
 
 		_samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
@@ -331,7 +376,7 @@ namespace Led
 		start = _samplerHeap->GetCPUDescriptorHandleForHeapStart().ptr;
 		step = ren->_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER);
 		start += step*(slot);
-		ren->_device->CreateSampler(&_samplerDesc, {start});*/
+		ren->_device->CreateSampler(&_samplerDesc, {start});
 	}
 	void RenderTexture::SetRaw(char *data, UINT width, UINT height)
 	{
@@ -354,30 +399,30 @@ namespace Led
 		uint sof = sizeof(_shaders);
 		memset(_shaders, 0, sizeof(_shaders));
 		_desc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
-    _desc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
-    _desc.RasterizerState.FrontCounterClockwise = FALSE;
-    _desc.RasterizerState.DepthBias = D3D12_DEFAULT_DEPTH_BIAS;
-    _desc.RasterizerState.DepthBiasClamp = D3D12_DEFAULT_DEPTH_BIAS_CLAMP;
-    _desc.RasterizerState.SlopeScaledDepthBias = D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
-    _desc.RasterizerState.DepthClipEnable = TRUE;
-    _desc.RasterizerState.MultisampleEnable = FALSE;
-    _desc.RasterizerState.AntialiasedLineEnable = FALSE;
-    _desc.RasterizerState.ForcedSampleCount = 0;
-    _desc.RasterizerState.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
+		_desc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
+		_desc.RasterizerState.FrontCounterClockwise = FALSE;
+		_desc.RasterizerState.DepthBias = D3D12_DEFAULT_DEPTH_BIAS;
+		_desc.RasterizerState.DepthBiasClamp = D3D12_DEFAULT_DEPTH_BIAS_CLAMP;
+		_desc.RasterizerState.SlopeScaledDepthBias = D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
+		_desc.RasterizerState.DepthClipEnable = TRUE;
+		_desc.RasterizerState.MultisampleEnable = FALSE;
+		_desc.RasterizerState.AntialiasedLineEnable = FALSE;
+		_desc.RasterizerState.ForcedSampleCount = 0;
+		_desc.RasterizerState.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
 		_desc.BlendState.AlphaToCoverageEnable = FALSE;
 		_desc.BlendState.IndependentBlendEnable = FALSE;
 
 		D3D12_RENDER_TARGET_BLEND_DESC defaultRT = {};
 		defaultRT.BlendEnable = FALSE;
-    defaultRT.LogicOpEnable = FALSE;
-    defaultRT.SrcBlend = D3D12_BLEND_ONE;
-    defaultRT.DestBlend = D3D12_BLEND_ZERO;
-    defaultRT.BlendOp = D3D12_BLEND_OP_ADD;
-    defaultRT.SrcBlendAlpha = D3D12_BLEND_ONE;
-    defaultRT.DestBlendAlpha = D3D12_BLEND_ZERO;
-    defaultRT.BlendOpAlpha = D3D12_BLEND_OP_ADD;
-    defaultRT.LogicOp = D3D12_LOGIC_OP_NOOP;
-    defaultRT.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+		defaultRT.LogicOpEnable = FALSE;
+		defaultRT.SrcBlend = D3D12_BLEND_ONE;
+		defaultRT.DestBlend = D3D12_BLEND_ZERO;
+		defaultRT.BlendOp = D3D12_BLEND_OP_ADD;
+		defaultRT.SrcBlendAlpha = D3D12_BLEND_ONE;
+		defaultRT.DestBlendAlpha = D3D12_BLEND_ZERO;
+		defaultRT.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+		defaultRT.LogicOp = D3D12_LOGIC_OP_NOOP;
+		defaultRT.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
 		for(UINT i = 0; i < D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i)
 			_desc.BlendState.RenderTarget[i] = defaultRT;
@@ -573,6 +618,16 @@ namespace Led
 			range.RegisterSpace = 0; // space 0. can usually be zero
 			range.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND; // this appends the range to the end of the root signature descriptor tables
 			ranges.push_back(range);
+
+			/*D3D12_DESCRIPTOR_RANGE range2; // only one range right now
+			range2.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV; // this is a range of constant buffer views (descriptors)
+			range2.NumDescriptors = 1; // we only have one constant buffer, so the range is only 1
+			range2.BaseShaderRegister = 0; // start index of the shader registers in the range
+			range2.RegisterSpace = 0; // space 0. can usually be zero
+			range2.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND; // this appends the range to the end of the root signature descriptor tables
+			ranges.push_back(range2);*/
+
+
 			// create a descriptor table
 			D3D12_ROOT_DESCRIPTOR_TABLE descriptorTable;
 			descriptorTable.NumDescriptorRanges = (uint)ranges.size(); // we only have one range
@@ -641,10 +696,21 @@ namespace Led
 			rootParameters.push_back(rootParameter);
 			rootSignatureDesc.Flags &= ~D3D12_ROOT_SIGNATURE_FLAG_DENY_PIXEL_SHADER_ROOT_ACCESS;
 		}*/
+		D3D12_STATIC_SAMPLER_DESC _samplerDesc = {};
+		_samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+		_samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+		_samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+		_samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+		_samplerDesc.MinLOD = -FLT_MAX;
+		_samplerDesc.MaxLOD = FLT_MAX;
+		_samplerDesc.MipLODBias = 0;
+		_samplerDesc.MaxAnisotropy = 0;
+		_samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+
 		rootSignatureDesc.NumParameters = (uint)rootParameters.size();
-    rootSignatureDesc.pParameters = rootParameters.size() ? &rootParameters[0] : nullptr;
-    rootSignatureDesc.NumStaticSamplers = 0;
-    rootSignatureDesc.pStaticSamplers = nullptr;
+		rootSignatureDesc.pParameters = rootParameters.size() ? &rootParameters[0] : nullptr;
+		rootSignatureDesc.NumStaticSamplers = 0;
+		//rootSignatureDesc.pStaticSamplers = &_samplerDesc;
 
 
 		//D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};

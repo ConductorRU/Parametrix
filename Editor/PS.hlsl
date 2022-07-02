@@ -12,8 +12,13 @@ cbuffer ConstantBufferX : register(b0)
 	float3 lightDir;
 	float3 camPos;
 };
+
+Texture2D g_texture : register(t0);
+SamplerState g_sampler : register(s0);
+
 float4 main(PSInput ps) : SV_TARGET
 {
+	//float4 texColor =  g_texture.Sample(g_sampler, ps.uv);
 	float3 viewDirection = normalize(camPos - ps.wposition.xyz);
 	float3 lightDirection = -lightDir;
 	float lightIntensity = saturate(dot(ps.normal, lightDirection));
@@ -28,5 +33,5 @@ float4 main(PSInput ps) : SV_TARGET
    specular = pow(saturate(dot(reflection, viewDirection)), 100.0f);
 	}
 
-	return float4(color.rgb + specular.rgb, 1.0f); // Red, Green, Blue, Alpha
+	return /*texColor * */float4(color.rgb + specular.rgb, 1.0f); // Red, Green, Blue, Alpha
 }
