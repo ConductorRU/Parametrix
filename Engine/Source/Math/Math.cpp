@@ -1,5 +1,6 @@
 #include "stdafx.h"
-#include "Math.h"
+#include "Math/Math.h"
+
 namespace Led
 {
 	namespace Math

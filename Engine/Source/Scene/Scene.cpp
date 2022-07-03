@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "../Math/Color.h"
-#include "../2D/Canvas.h"
-#include "Actor.h"
-#include "Scene.h"
+#include "Math/Color.h"
+#include "2D/Canvas.h"
+#include "Scene/Actor.h"
+#include "Scene/Scene.h"
 
 namespace Led
 {

@@ -1,4 +1,4 @@
-#include "Source/Parametrix.h"
+#include "Parametrix.h"
 #include "Game.h"
 
 Game::Game()
@@ -62,7 +62,7 @@ Game::Game()
 	ParaBox box;
 	box.size = float3(2.0f, 2.0f, 2.0f);
 	Polygons polys = box.Generate(_mesh);
-	polys.SetColor(Color(0.0f, 0.0f, 1.0f));
+	polys.SetColor(Color(1.0f, 1.0f, 1.0f));
 
 
 		//mesh->GetTransform().SetPosition(float3(Random(-10.0f, 10.0f), Random(-10.0f, 10.0f), Random(-10.0f, 10.0f)));

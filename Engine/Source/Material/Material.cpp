@@ -1,6 +1,7 @@
 #include "stdafx.h"
-#include "../Render/Header.h"
-#include "Material.h"
+#include "Render/Header.h"
+#include "Material/Material.h"
+
 namespace Led
 {
 	VertexShader::VertexShader()

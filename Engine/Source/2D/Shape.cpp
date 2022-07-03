@@ -7,7 +7,8 @@
 #include "Scene/Manager.h"
 #include "Scene/Header.h"
 #include "Core/Header.h"
-#include "Shape.h"
+#include "2D/Shape.h"
+
 namespace Led
 {
 	Shape::Shape(InputLayout *io, Material* mat): RenderMesh(io)

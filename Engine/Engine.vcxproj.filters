@@ -118,118 +118,118 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Parametrix.h">
+    <ClInclude Include="include\Parametrix.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Source\stdafx.h">
+    <ClInclude Include="include\stdafx.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Core\Engine.h">
+    <ClInclude Include="include\Core\Engine.h">
       <Filter>Исходные файлы\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Core\Header.h">
+    <ClInclude Include="include\Core\Header.h">
       <Filter>Исходные файлы\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Core\Window.h">
+    <ClInclude Include="include\Core\Window.h">
       <Filter>Исходные файлы\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Render\Render.h">
+    <ClInclude Include="include\Render\Render.h">
       <Filter>Исходные файлы\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Render\Header.h">
+    <ClInclude Include="include\Render\Header.h">
       <Filter>Исходные файлы\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Render\DirectX12\RenderDX12.h">
+    <ClInclude Include="include\Render\DirectX12\RenderDX12.h">
       <Filter>Исходные файлы\Render\DirectX12</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Render\DirectX12\Header.h">
+    <ClInclude Include="include\Render\DirectX12\Header.h">
       <Filter>Исходные файлы\Render\DirectX12</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Math\Color.h">
+    <ClInclude Include="include\Math\Color.h">
       <Filter>Исходные файлы\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Math\Header.h">
+    <ClInclude Include="include\Math\Header.h">
       <Filter>Исходные файлы\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Core\Debug.h">
+    <ClInclude Include="include\Core\Debug.h">
       <Filter>Исходные файлы\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Material\Header.h">
+    <ClInclude Include="include\Material\Header.h">
       <Filter>Исходные файлы\Material</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Material\Material.h">
+    <ClInclude Include="include\Material\Material.h">
       <Filter>Исходные файлы\Material</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Render\DirectX12\RenderMesh.h">
+    <ClInclude Include="include\Render\DirectX12\RenderMesh.h">
       <Filter>Исходные файлы\Render\DirectX12</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Header.h">
+    <ClInclude Include="include\Scene\Header.h">
       <Filter>Исходные файлы\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Scene.h">
+    <ClInclude Include="include\Scene\Scene.h">
       <Filter>Исходные файлы\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Math\Transform.h">
+    <ClInclude Include="include\Math\Transform.h">
       <Filter>Исходные файлы\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Actor.h">
+    <ClInclude Include="include\Scene\Actor.h">
       <Filter>Исходные файлы\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Mesh.h">
+    <ClInclude Include="include\Scene\Mesh.h">
       <Filter>Исходные файлы\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Camera.h">
+    <ClInclude Include="include\Scene\Camera.h">
       <Filter>Исходные файлы\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Math\Math.h">
+    <ClInclude Include="include\Math\Math.h">
       <Filter>Исходные файлы\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Core\Input.h">
+    <ClInclude Include="include\Core\Input.h">
       <Filter>Исходные файлы\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Light.h">
+    <ClInclude Include="include\Scene\Light.h">
       <Filter>Исходные файлы\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Format\Header.h">
+    <ClInclude Include="include\Format\Header.h">
       <Filter>Исходные файлы\Format</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Format\XML.h">
+    <ClInclude Include="include\Format\XML.h">
       <Filter>Исходные файлы\Format</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Format\File.h">
+    <ClInclude Include="include\Format\File.h">
       <Filter>Исходные файлы\Format</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\Manager.h">
+    <ClInclude Include="include\Scene\Manager.h">
       <Filter>Исходные файлы\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Material\Texture.h">
+    <ClInclude Include="include\Material\Texture.h">
       <Filter>Исходные файлы\Material</Filter>
     </ClInclude>
-    <ClInclude Include="Source\2D\Actor2D.h">
+    <ClInclude Include="include\2D\Actor2D.h">
       <Filter>Исходные файлы\2D</Filter>
     </ClInclude>
-    <ClInclude Include="Source\2D\Canvas.h">
+    <ClInclude Include="include\2D\Canvas.h">
       <Filter>Исходные файлы\2D</Filter>
     </ClInclude>
-    <ClInclude Include="Source\2D\Header.h">
+    <ClInclude Include="include\2D\Header.h">
       <Filter>Исходные файлы\2D</Filter>
     </ClInclude>
-    <ClInclude Include="Source\2D\Shape.h">
+    <ClInclude Include="include\2D\Shape.h">
       <Filter>Исходные файлы\2D</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Math\Vector.h">
+    <ClInclude Include="include\Math\Vector.h">
       <Filter>Исходные файлы\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Math\Quaternion.h">
+    <ClInclude Include="include\Math\Quaternion.h">
       <Filter>Исходные файлы\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Math\Transform2D.h">
+    <ClInclude Include="include\Math\Transform2D.h">
       <Filter>Исходные файлы\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Core\Event.h">
+    <ClInclude Include="include\Core\Event.h">
       <Filter>Исходные файлы\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Source\2D\FreeType.h" />
+    <ClInclude Include="include\2D\FreeType.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Build.bat">

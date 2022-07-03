@@ -33,5 +33,5 @@ float4 main(PSInput ps) : SV_TARGET
    specular = pow(saturate(dot(reflection, viewDirection)), 100.0f);
 	}
 
-	return /*texColor * */float4(color.rgb + specular.rgb, 1.0f); // Red, Green, Blue, Alpha
+	return /*texColor * */float4(color.rgb + specular.rgb, 1.0f)*float4(color.r * ps.uv.r, color.g * ps.uv.g, color.b, 1.0f); // Red, Green, Blue, Alpha
 }

@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "../Render/Header.h"
-#include "../Material/Header.h"
-#include "Manager.h"
+#include "Render/Header.h"
+#include "Material/Header.h"
+#include "Scene/Manager.h"
 
 namespace Led
 {

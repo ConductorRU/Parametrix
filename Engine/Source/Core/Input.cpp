@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "../Math/Transform.h"
-#include "Window.h"
-#include "../Render/Render.h"
-#include "Engine.h"
-#include "Input.h"
+#include "Math/Transform.h"
+#include "Core/Window.h"
+#include "Render/Render.h"
+#include "Core/Engine.h"
+#include "Core/Input.h"
 
 namespace Led
 {

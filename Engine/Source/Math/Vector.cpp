@@ -1,5 +1,6 @@
 #include "stdafx.h"
-#include "Vector.h"
+#include "Math/Vector.h"
+
 namespace Led
 {
 	const float3 float3::ONE_X = float3(1.0f, 0.0f, 0.0f);

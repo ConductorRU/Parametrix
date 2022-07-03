@@ -1,5 +1,6 @@
 #include "stdafx.h"
-#include "Window.h"
+#include "Core/Window.h"
+
 namespace Led
 {
 	map<HWND, Window*> Window::_map = {};

@@ -1,6 +1,7 @@
 #include "stdafx.h"
-#include "Shape.h"
-#include "Canvas.h"
+#include "2D/Shape.h"
+#include "2D/Canvas.h"
+
 namespace Led
 {
 	Canvas::Canvas(InputLayout *input, Material *material)

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Math/Vector.h"
-#include "FreeType.h"
+#include "2D/FreeType.h"
+
 namespace Led
 {
 	FreeType::FreeType()

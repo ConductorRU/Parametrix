@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "../Math/Header.h"
-#include "Header.h"
-#include "../Scene/Header.h"
+#include "Math/Header.h"
+#include "Render/Header.h"
+#include "Scene/Header.h"
 namespace Led
 {
 	Render *Render::_this = nullptr;

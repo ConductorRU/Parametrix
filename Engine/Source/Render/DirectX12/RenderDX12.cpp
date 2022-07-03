@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "Header.h"
-#include "../../Core/Debug.h"
-#include "../../Core/Window.h"
-#include "../../Core/Engine.h"
+#include "Render/Header.h"
+#include "Core/Debug.h"
+#include "Core/Window.h"
+#include "Core/Engine.h"
 namespace Led
 {
 	RenderDX12 *RenderDX12::_this = nullptr;

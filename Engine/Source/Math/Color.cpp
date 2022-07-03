@@ -1,5 +1,6 @@
 #include "stdafx.h"
-#include "Color.h"
+#include "Math/Color.h"
+
 namespace Led
 {
 

@@ -1,9 +1,10 @@
 #include "stdafx.h"
-#include "../../Core/Debug.h"
-#include "../../Math/Transform.h"
-#include "../../Math/Color.h"
-#include "RenderMesh.h"
-#include "RenderDX12.h"
+#include "Core/Debug.h"
+#include "Math/Transform.h"
+#include "Math/Color.h"
+#include "Render/DirectX12/RenderMesh.h"
+#include "Render/DirectX12/RenderDX12.h"
+
 namespace Led
 {
 	UINT InputLayout::GetElementSize(DXGI_FORMAT format)

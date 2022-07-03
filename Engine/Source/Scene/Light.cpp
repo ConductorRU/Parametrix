@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "../Math/Color.h"
-#include "Actor.h"
-#include "Light.h"
+#include "Math/Color.h"
+#include "Scene/Actor.h"
+#include "Scene/Light.h"
 
 namespace Led
 {

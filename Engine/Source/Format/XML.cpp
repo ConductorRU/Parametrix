@@ -1,5 +1,6 @@
 #include "stdafx.h"
-#include "XML.h"
+#include "Format/XML.h"
+
 namespace Led
 {
 	XMLNode::XMLNode()
